@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+
+
+<Button
+    android:id="@+id/getinfo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:text="Get Info"
+    android:padding="10dp"
+    android:layout_marginTop="45dp"
+    android:paddingRight="10dp"
+    android:onClick="getInfo"/>
+<Button
+        android:id="@+id/setparking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/getinfo"
+        android:layout_alignParentRight="true"
+        android:text="Parked"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:paddingRight="10dp"
+        android:onClick="setParking"/>
+<fragment
+    android:id="@+id/map"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:name="com.google.android.gms.maps.MapFragment"
+    tools:ignore="MissingPrefix"
+    map:cameraZoom="13"
+    map:mapType="normal"
+/>
+
+</RelativeLayout>
