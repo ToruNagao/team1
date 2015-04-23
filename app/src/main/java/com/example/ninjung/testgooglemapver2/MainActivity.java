@@ -170,7 +170,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         });
     }
 
-
     String test = "Testing commit to GitHub.";
+    String test2 = "Test Toru";
 
 }
