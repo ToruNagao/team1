@@ -10,4 +10,14 @@
         android:scaleType="centerInside"
         android:src="@drawable/splash"
         />
+    
+    <ProgressBar
+        android:id="@+id/progBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:layout_alignParentBottom='true'
+        android:layout_centerHorizontal="true"
+        />
 </LinearLayout>
