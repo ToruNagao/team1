@@ -179,7 +179,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         Marker marker1= map.addMarker(markerOptions);
         marker1.showInfoWindow();
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
+            //test comment
             // Use default InfoWindow frame
             @Override
             public View getInfoWindow(Marker arg0) {
