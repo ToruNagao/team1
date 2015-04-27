@@ -172,6 +172,8 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         // Setting the position for the marker
         markerOptions.position(location);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
+
+        //NEED TO CHANGE THIS LINE
         markerOptions.title("Can park: "+SFPark.getXmlResult());
         map.clear();
         Marker marker1= map.addMarker(markerOptions);
