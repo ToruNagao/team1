@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.Image;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -29,8 +30,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends FragmentActivity implements GoogleMap.OnMapClickListener{
 
@@ -54,6 +58,30 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 .position(sfsu));
         marker.showInfoWindow();
         map.setOnMapClickListener(this);
+
+        //Handles custom info window on map click
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
+                LatLng point = marker.getPosition();
+
+                //Text and image to be displayed in this custom window
+                //Image will be changed to streetview picture later if possible
+                TextView tvLat = (TextView) v.findViewById(R.id.tv_lat);
+                TextView tvlng = (TextView) v.findViewById(R.id.tv_lng);
+                tvLat.setText("Latitude: " + point.latitude);
+                tvlng.setText("Longitude: " + point.longitude);
+                ImageView image = (ImageView) v.findViewById(R.id.streetview);
+
+                return  v;
+            }
+        });
     }
 
 
@@ -96,6 +124,9 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     }
     @Override
     public void onMapClick(LatLng point) {
+        // Clears the previously touched position
+        map.clear();
+
         location= point;
         MarkerOptions markerOptions = new MarkerOptions();
 
@@ -106,14 +137,16 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         // This will be displayed on taping the marker
         markerOptions.title(point.latitude + " : " + point.longitude);
 
-        // Clears the previously touched position
-        map.clear();
 
         // Animating to the touched position
         map.animateCamera(CameraUpdateFactory.newLatLng(point));
 
         // Placing a marker on the touched position
         map.addMarker(markerOptions);
+
+        // Set marker to handle custom info window
+        Marker marker = map.addMarker(markerOptions);
+        marker.showInfoWindow();
     }
     public void getInfo(View view) {
         // Perform action on click
