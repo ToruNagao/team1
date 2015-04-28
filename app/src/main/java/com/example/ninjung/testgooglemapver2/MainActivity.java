@@ -36,11 +36,16 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends FragmentActivity implements GoogleMap.OnMapClickListener{
+import java.util.ArrayList;
+
+public class MainActivity extends FragmentActivity implements GoogleMap.OnMapClickListener {
 
     final int RQS_GooglePlayServices = 1;
     private GoogleMap map;
     LatLng location;
+
+    //ArrayList used to store SFPark information, this is set in processFinish().
+    private ArrayList<AVL> sfpInfo = new ArrayList<AVL>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +163,33 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         markerOptions.position(location);
 
         // Connecting SF Park API
-        new SFPark.FeedTask().execute(location.latitude, location.longitude);
+        //new SFPark.FeedTask().execute(location.latitude, location.longitude);
+
+
+        SFPark.FeedTask feedTask = new SFPark.FeedTask(new AsyncResponse() {
+
+            /**
+             * Used to retrieve information from onPostExecute() in SFPark.java.
+             * @param avl Output from onPostExecute() is passed through here.
+             */
+            @Override
+            public void processFinish(ArrayList<AVL> avl) {
+
+                //Assign ArrayList avl to sfpInfo so it can be used in this file.
+                sfpInfo = avl;
+
+                //Printing for debugging purposes, delete this later...
+                if (avl.size() > 0) {
+                    System.out.println("The rate in AM is " + avl.get(0).getRATES());
+                } else {
+                    System.out.println("The size of AVL is 0 in MainActivity.java!");
+                }
+            }
+        });
+
+        //Request information from the SFPark API.
+        feedTask.execute(location.latitude, location.longitude);
+
     }
 
     public void setParking(View view) {
@@ -167,19 +198,19 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         if(location == null){
             location = new LatLng(37.7223950, -122.4786140); // Setting default at SFSU
         }
-        new SFPark.FeedTask().execute(location.latitude, location.longitude);
+
         MarkerOptions markerOptions = new MarkerOptions();
         // Setting the position for the marker
         markerOptions.position(location);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
 
         //NEED TO CHANGE THIS LINE
-        markerOptions.title("Can park: "+SFPark.getXmlResult());
+        markerOptions.title("Can park: ");
         map.clear();
         Marker marker1= map.addMarker(markerOptions);
         marker1.showInfoWindow();
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            //test comment
+
             // Use default InfoWindow frame
             @Override
             public View getInfoWindow(Marker arg0) {
@@ -203,5 +234,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
             }
         });
+
     }
+
 }
