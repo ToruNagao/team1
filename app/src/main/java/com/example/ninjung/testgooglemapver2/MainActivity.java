@@ -159,6 +159,18 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         // Connecting SF Park API
         new SFPark.FeedTask().execute(location.latitude, location.longitude);
+        SFP sfp = SFP.getInstance();
+
+        //Still need to figure out a way to access AVL in MainActivity.
+        
+//        System.out.println("Printing information from AVL...");
+//        if (sfp.getAVL().size() > 0) {
+//            System.out.println("The rates are : ");
+//            sfp.getAVL().get(0).getRATES();
+//        } else {
+//            System.out.println("No records were found!");
+//        }
+
     }
 
     public void setParking(View view) {
@@ -174,7 +186,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
 
         //NEED TO CHANGE THIS LINE
-        markerOptions.title("Can park: "+SFPark.getXmlResult());
+        markerOptions.title("Can park: ");
         map.clear();
         Marker marker1= map.addMarker(markerOptions);
         marker1.showInfoWindow();
