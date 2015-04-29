@@ -303,7 +303,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
             }
         });
-
     }
 
+    /* Display 5 latest parking*/
+    public void showRecentParking(View view) {
+        System.out.println("Show recent parking");
+    }
 }
