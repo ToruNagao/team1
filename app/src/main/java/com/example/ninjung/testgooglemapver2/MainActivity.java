@@ -43,9 +43,14 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     final int RQS_GooglePlayServices = 1;
     private GoogleMap map;
     LatLng location;
+    int buttonCounter = 0;
 
     //ArrayList used to store SFPark information, this is set in processFinish().
     private ArrayList<AVL> sfpInfo = new ArrayList<AVL>();
+
+    // used to clean database table if needed
+    //DBHelper dbHandler = new DBHelper(this, null, null, 1);
+    //dbHandler.cleanDB();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +208,32 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         // Setting the position for the marker
         markerOptions.position(location);
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
+
+        //storing location to DB
+        buttonCounter++;
+        if((buttonCounter%2) == 1) {
+            DBHelper dbHandler = new DBHelper(this, null, null, 1);
+
+            Location parked =
+                    new Location(location.latitude, location.longitude);
+
+            dbHandler.addLocation(parked);
+        }
+        else {
+            DBHelper dbHandler = new DBHelper(this, null, null, 1);
+
+            Location parked = dbHandler.findLocation(dbHandler.getRowCount());
+
+            if (parked != null) {
+                Toast.makeText(getApplicationContext(),
+                        "Lat: " + parked.getLatitude() + "\nLong: " + parked.getLongitude(),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "No records found.",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
 
         //NEED TO CHANGE THIS LINE
         markerOptions.title("Can park: ");
