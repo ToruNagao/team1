@@ -159,6 +159,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         Marker marker = map.addMarker(markerOptions);
         marker.showInfoWindow();
     }
+
     /*display parking information when user click info button*/
     public void getInfo(View view) {
         // Perform action on click
@@ -169,36 +170,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         // Setting the position for the marker
         markerOptions.position(location);
 
-        // Connecting SF Park API
-        //new SFPark.FeedTask().execute(location.latitude, location.longitude);
-
-
-        SFPark.FeedTask feedTask = new SFPark.FeedTask(new AsyncResponse() {
-
-            /**
-             * Used to retrieve information from onPostExecute() in SFPark.java.
-             * @param avl Output from onPostExecute() is passed through here.
-             */
-            @Override
-            public void processFinish(ArrayList<AVL> avl) {
-
-                //Assign ArrayList avl to sfpInfo so it can be used in this file.
-                sfpInfo = avl;
-
-                //Printing for debugging purposes, delete this later...
-                if (avl.size() > 0) {
-                    System.out.println("The rate in AM is " + avl.get(0).getRATES());
-                } else {
-                    System.out.println("The size of AVL is 0 in MainActivity.java!");
-                }
-            }
-        });
-
-        //Request information from the SFPark API.
-        feedTask.execute(location.latitude, location.longitude);
-
-
-
+        getSFParkInfo();// call the method to get SFPark information
 
         //NEED TO CHANGE THIS LINE
         if (sfpInfo.size() > 0) {
@@ -252,8 +224,17 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             }
         }
 
+        getSFParkInfo();// call the method to get SFPark information
+
         //NEED TO CHANGE THIS LINE
-        markerOptions.title("Can park: ");
+        if (sfpInfo.size() > 0) {
+            markerOptions.title("Rate");
+            markerOptions.snippet(sfpInfo.get(0).getRATES().toString());
+        } else {
+            markerOptions.title("Rate");
+            markerOptions.snippet("Undetected");
+        }
+
         map.clear();
         displayParkingInfo(markerOptions,"setParking");
     }
@@ -294,5 +275,31 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 return  v;
             }
         });
+    }
+
+    private void getSFParkInfo(){
+        SFPark.FeedTask feedTask = new SFPark.FeedTask(new AsyncResponse() {
+
+            /**
+             * Used to retrieve information from onPostExecute() in SFPark.java.
+             * @param avl Output from onPostExecute() is passed through here.
+             */
+            @Override
+            public void processFinish(ArrayList<AVL> avl) {
+
+                //Assign ArrayList avl to sfpInfo so it can be used in this file.
+                sfpInfo = avl;
+
+                //Printing for debugging purposes, delete this later...
+                if (avl.size() > 0) {
+                    System.out.println("The rate in AM is " + avl.get(0).getRATES());
+                } else {
+                    System.out.println("The size of AVL is 0 in MainActivity.java!");
+                }
+            }
+        });
+
+        //Request information from the SFPark API.
+        feedTask.execute(location.latitude, location.longitude);
     }
 }

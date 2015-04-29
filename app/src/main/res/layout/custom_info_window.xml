@@ -9,8 +9,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginRight="5dp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/darkgreen_parking">
+        android:adjustViewBounds="true">
     </ImageView>
 
     <LinearLayout
