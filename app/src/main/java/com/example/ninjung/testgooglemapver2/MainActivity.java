@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
 import android.media.Image;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
@@ -34,10 +35,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.location.Geocoder;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements GoogleMap.OnMapClickListener {
 
@@ -85,14 +90,38 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 //Text and image to be displayed in this custom window
                 //Image will be changed to streetview picture later if possible
                 TextView tvLat = (TextView) v.findViewById(R.id.tv_lat);
-                TextView tvlng = (TextView) v.findViewById(R.id.tv_lng);
-                tvLat.setText("Latitude: " + point.latitude);
-                tvlng.setText("Longitude: " + point.longitude);
+                //TextView tvlng = (TextView) v.findViewById(R.id.tv_lng);
+                tvLat.setText(getAddress(point.latitude, point.longitude));
+                //tvlng.setText("Longitude: " + point.longitude);
                 ImageView image = (ImageView) v.findViewById(R.id.streetview);
 
                 return  v;
             }
         });
+    }
+
+    /**
+     * This method converts latitude and longitude to streed address
+     * and return it as String
+     *
+     * @param lat - latitude
+     * @param lng - longitude
+     * @return String: Street address based on the given latitude and longitude
+     */
+    public String getAddress(double lat, double lng) {
+        String address = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try
+        {
+            List<Address> addressList = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addressList.get(0);
+            address = obj.getAddressLine(0) + ", " +obj.getAddressLine(1);
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        return address;
     }
 
 
