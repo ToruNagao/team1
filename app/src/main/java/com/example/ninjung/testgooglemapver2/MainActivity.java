@@ -195,6 +195,44 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         //Request information from the SFPark API.
         feedTask.execute(location.latitude, location.longitude);
 
+
+
+
+        //NEED TO CHANGE THIS LINE
+        if (sfpInfo.size() > 0) {
+            markerOptions.title("Rate: "+sfpInfo.get(0).getRATES());
+        } else {
+            markerOptions.title("Rate: Undetected");
+        }
+        map.clear();
+        Marker marker1= map.addMarker(markerOptions);
+        marker1.showInfoWindow();
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            // Use default InfoWindow frame
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            // Defines the contents of the InfoWindow
+            @Override
+            public View getInfoContents(Marker arg0) {
+
+                // Getting view from the layout file info_window_layout
+                View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+                TextView txtCanPark = (TextView) v.findViewById(R.id.parkingInfo);
+                txtCanPark.setText(arg0.getTitle());
+
+
+                final TextView snippetUi = ((TextView) v.findViewById(R.id.snippet));
+                snippetUi.setText("snippet");
+                // Returning the view containing InfoWindow contents
+                return v;
+
+            }
+        });
+
     }
 
     public void setParking(View view) {
