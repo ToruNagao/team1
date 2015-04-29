@@ -89,9 +89,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
                 //Text and image to be displayed in this custom window
                 //Image will be changed to streetview picture later if possible
-                TextView tvLat = (TextView) v.findViewById(R.id.tv_lat);
+                //TextView tvLat = (TextView) v.findViewById(R.id.tv_lat);
                 //TextView tvlng = (TextView) v.findViewById(R.id.tv_lng);
-                tvLat.setText(getAddress(point.latitude, point.longitude));
+                TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
+                tvaddress.setText(getAddress(point.latitude, point.longitude));
                 //tvlng.setText("Longitude: " + point.longitude);
                 ImageView image = (ImageView) v.findViewById(R.id.streetview);
 
@@ -101,7 +102,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     }
 
     /**
-     * This method converts latitude and longitude to streed address
+     * This method converts latitude and longitude to street address
      * and return it as String
      *
      * @param lat - latitude
