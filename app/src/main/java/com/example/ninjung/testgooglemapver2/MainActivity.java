@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
@@ -158,6 +159,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         Marker marker = map.addMarker(markerOptions);
         marker.showInfoWindow();
     }
+    /*display parking information when user click info button*/
     public void getInfo(View view) {
         // Perform action on click
         MarkerOptions markerOptions = new MarkerOptions();
@@ -200,36 +202,37 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         //NEED TO CHANGE THIS LINE
         if (sfpInfo.size() > 0) {
-            markerOptions.title("Rate: "+sfpInfo.get(0).getRATES());
+            markerOptions.title("Rate");
+            markerOptions.snippet(sfpInfo.get(0).getRATES().toString());
         } else {
-            markerOptions.title("Rate: Undetected");
+            markerOptions.title("Rate");
+            markerOptions.snippet("Undetected");
         }
-        map.clear();
-        Marker marker1= map.addMarker(markerOptions);
-        marker1.showInfoWindow();
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
-            // Use default InfoWindow frame
+        map.clear();//clear marker on the map
+        Marker marker1= map.addMarker(markerOptions);// add a new marker
+        marker1.showInfoWindow();
+
+        //Display Rate from SFPark on infoWindow
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
-            public View getInfoWindow(Marker arg0) {
+            public View getInfoWindow(Marker marker) {
                 return null;
             }
 
-            // Defines the contents of the InfoWindow
             @Override
-            public View getInfoContents(Marker arg0) {
-
-                // Getting view from the layout file info_window_layout
+            public View getInfoContents(Marker marker) {
                 View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
                 TextView txtCanPark = (TextView) v.findViewById(R.id.parkingInfo);
-                txtCanPark.setText(arg0.getTitle());
+                txtCanPark.setText(marker.getTitle());
 
 
-                final TextView snippetUi = ((TextView) v.findViewById(R.id.snippet));
-                snippetUi.setText("snippet");
-                // Returning the view containing InfoWindow contents
-                return v;
+                TextView snippetUi = ((TextView) v.findViewById(R.id.snippet));
+                snippetUi.setText(marker.getSnippet());
 
+                ImageView icon = ((ImageView) v.findViewById(R.id.badge));
+                icon.setImageResource(R.drawable.red_marker_info);
+                return  v;
             }
         });
 
@@ -307,6 +310,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     /* Display 5 latest parking*/
     public void showRecentParking(View view) {
+        //retrieve data from DB
         System.out.println("Show recent parking");
     }
 }
