@@ -1,55 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
-
-
-
-
-<Button
-    android:id="@+id/getinfo"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentRight="true"
-    android:text="Get Info"
-    android:padding="10dp"
-    android:layout_marginTop="45dp"
-    android:paddingRight="10dp"
-    android:onClick="getInfo"/>
-<Button
-        android:id="@+id/setparking"
+    tools:context=".MainActivity"
+    android:background="@color/background_floating_material_dark">
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/getinfo"
-        android:layout_alignParentRight="true"
-        android:text="Parked"
-        android:padding="10dp"
-        android:layout_marginTop="10dp"
-        android:paddingRight="10dp"
-        android:onClick="setParking"/>
-    <Button
-        android:id="@+id/showRecentParking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/setparking"
-        android:layout_alignParentRight="true"
-        android:text="Recent Parking"
-        android:padding="10dp"
-        android:layout_marginTop="10dp"
-        android:paddingRight="10dp"
-        android:onClick="showRecentParking"/>
-<fragment
-    android:id="@+id/map"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:name="com.google.android.gms.maps.MapFragment"
-    tools:ignore="MissingPrefix"
-    map:cameraZoom="13"
-    map:mapType="normal"
-/>
+        android:orientation="horizontal" >
+        <Button
+            android:id="@+id/getinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Info"
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:paddingRight="50dp"
+            android:layout_marginRight="40dp"
+            android:onClick="getInfo"/>
+        <Button
+            android:id="@+id/setparking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parking"
+            android:padding="10dp"
+            android:paddingRight="50dp"
+            android:layout_marginRight="40dp"
+            android:onClick="setParking"/>
+        <Button
+            android:id="@+id/showRecentParking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recent"
+            android:padding="10dp"
+            android:paddingRight="10dp"
+            android:onClick="showRecentParking"/>
+    </LinearLayout>
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.MapFragment"
+        tools:ignore="MissingPrefix"
+        map:cameraZoom="13"
+        map:mapType="normal"
+    />
 
-</RelativeLayout>
+
+</LinearLayout>
