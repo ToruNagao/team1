@@ -177,7 +177,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         // Setting the title for the marker.
         // This will be displayed on taping the marker
         markerOptions.title(point.latitude + " : " + point.longitude);
-
+        System.out.println("Latitude: "+point.latitude+" Longitude: "+point.longitude);
 
         // Animating to the touched position
         map.animateCamera(CameraUpdateFactory.newLatLng(point));
@@ -269,10 +269,19 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         displayParkingInfo(markerOptions,"setParking");
     }
 
-    /* Display 5 latest parking*/
+    /**
+     *
+     * @param view connect to custom_info_window.ext to present data from SFPark on InfoWindow
+     */
     public void showRecentParking(View view) {
         //retrieve data from DB
         System.out.println("Show recent parking");
+        DBHelper dbHandler = new DBHelper(this, null, null, 1);
+
+        ArrayList<Location> locations = dbHandler.getRecentParking();
+        for (Location loc : locations) {
+            System.out.println("latitude: "+loc.getLatitude()+", longitude: "+loc.getLongitude());
+        }
     }
 
     public void displayParkingInfo(MarkerOptions markerOptions, final String type){

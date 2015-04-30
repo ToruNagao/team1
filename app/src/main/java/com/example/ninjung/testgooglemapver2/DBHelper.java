@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DBHelper extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION = 1;
@@ -15,6 +17,7 @@ public class DBHelper extends SQLiteOpenHelper{
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_LATITUDE = "latitude";
     public static final String COLUMN_LONGITUDE = "longitude";
+    public static final String MOST_RECENT_NUMBER = "5";
 
     public DBHelper(Context context, String name,
                     SQLiteDatabase.CursorFactory factory, int version) {
@@ -132,5 +135,32 @@ public class DBHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(query, null);
         return cursor.getCount();
 
+    }
+    public ArrayList<Location> getRecentParking(){
+        String query = "Select DISTINCT "+COLUMN_LATITUDE+", "+ COLUMN_LONGITUDE+
+                " from " + TABLE_LOCATIONS +
+                " Group by " +COLUMN_ID+
+                " Order by "+COLUMN_ID + " desc "+
+                " limit "+MOST_RECENT_NUMBER;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        ArrayList<Location> locations = new ArrayList<Location>();
+        if(cursor.moveToFirst()){
+            while(cursor.isAfterLast() == false) {
+                Location location = new Location();
+                location.setLatitude(Double.parseDouble(cursor.getString(0)));
+                location.setLongitude(Double.parseDouble(cursor.getString(1)));
+                locations.add(location);
+                cursor.moveToNext();
+            }
+        }
+        else
+            locations = null;
+
+        db.close();
+        return locations;
     }
 }
