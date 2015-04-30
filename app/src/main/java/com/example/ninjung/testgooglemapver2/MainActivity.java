@@ -25,6 +25,7 @@ import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.StreetViewPanoramaOptions;
 import com.google.android.gms.maps.StreetViewPanoramaView;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -47,6 +48,11 @@ import java.util.Locale;
 public class MainActivity extends FragmentActivity implements GoogleMap.OnMapClickListener {
 
     final int RQS_GooglePlayServices = 1;
+    private static final String RECENT_PARKING_FIRST = "R.drawable.pink_marker_a";
+    private static final String RECENT_PARKING_SECOND = "R.drawable.purple_marker_b";
+    private static final String RECENT_PARKING_THIRD = "R.drawable.blue_marker_c";
+    private static final String RECENT_PARKING_FOURTH = "R.drawable.paleblue_marker_d";
+    private static final String RECENT_PARKING_FIFTH = "R.drawable.brown_marker_e";
     private GoogleMap map;
     LatLng location;
     int buttonCounter = 0;
@@ -66,12 +72,12 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap();
-        LatLng sfsu = new LatLng(37.7223950, -122.4786140);
+        location = new LatLng(37.7223950, -122.4786140);//default location at SFSU
         map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(sfsu, 13));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13));
         Marker marker = map.addMarker(new MarkerOptions()
                 .title("San Francisco State University")
-                .position(sfsu));
+                .position(location));
         marker.showInfoWindow();
         map.setOnMapClickListener(this);
 
@@ -194,9 +200,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     public void getInfo(View view) {
         // Perform action on click
         MarkerOptions markerOptions = new MarkerOptions();
-        if(location == null){
-            location = new LatLng(37.7223950, -122.4786140); // Setting default at SFSU
-        }
         // Setting the position for the marker
         markerOptions.position(location);
 
@@ -204,11 +207,11 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         //NEED TO CHANGE THIS LINE
         if (sfpInfo.size() > 0) {
-            markerOptions.title("Rate");
-            markerOptions.snippet(sfpInfo.get(0).getRATES().toString());
+            markerOptions.title(getAddress(location.latitude, location.longitude));
+            markerOptions.snippet("Rate\n"+sfpInfo.get(0).getRATES().toString());
         } else {
-            markerOptions.title("Rate");
-            markerOptions.snippet("Undetected");
+            markerOptions.title(getAddress(location.latitude, location.longitude));
+            markerOptions.snippet("Rate: Undetected");
         }
 
         map.clear();//clear marker on the map
@@ -219,9 +222,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     public void setParking(View view) {
         // Perform action on click
         //MarkerOptions markerOptions = new MarkerOptions();
-        if(location == null){
-            location = new LatLng(37.7223950, -122.4786140); // Setting default at SFSU
-        }
 
         MarkerOptions markerOptions = new MarkerOptions();
         // Setting the position for the marker
@@ -258,11 +258,11 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         //NEED TO CHANGE THIS LINE
         if (sfpInfo.size() > 0) {
-            markerOptions.title("Rate");
-            markerOptions.snippet(sfpInfo.get(0).getRATES().toString());
+            markerOptions.title(getAddress(location.latitude, location.longitude));
+            markerOptions.snippet("Rate\n"+sfpInfo.get(0).getRATES().toString());
         } else {
-            markerOptions.title("Rate");
-            markerOptions.snippet("Undetected");
+            markerOptions.title(getAddress(location.latitude, location.longitude));
+            markerOptions.snippet("Rate: Undetected");
         }
 
         map.clear();
@@ -279,8 +279,26 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         DBHelper dbHandler = new DBHelper(this, null, null, 1);
 
         ArrayList<Location> locations = dbHandler.getRecentParking();
-        for (Location loc : locations) {
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
+        for (int i=0;i<locations.size();i++) {
+            Location loc = locations.get(i);
             System.out.println("latitude: "+loc.getLatitude()+", longitude: "+loc.getLongitude());
+            BitmapDescriptor bitmapMarker;
+            if(i+1==1){
+                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.pink_marker_a);
+            }else if(i+1==2){
+                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.purple_marker_b);
+            }else if(i+1==3){
+                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.blue_marker_c);
+            }else if(i+1==4){
+                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.paleblue_marker_d);
+            }else {
+                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.brown_marker_e);
+            }
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
+                    .title(getAddress(loc.getLatitude(),loc.getLongitude()))
+                    .icon(bitmapMarker));
         }
     }
 
