@@ -1,15 +1,7 @@
 package com.example.ninjung.testgooglemapver2;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+
 import android.location.Address;
-import android.media.Image;
-import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,6 +17,7 @@ import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.StreetViewPanoramaOptions;
 import com.google.android.gms.maps.StreetViewPanoramaView;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -55,7 +48,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     //ArrayList used to store SFPark information, this is set in processFinish().
     private ArrayList<AVL> sfpInfo = new ArrayList<AVL>();
 
-    // used to clean database table if needed
+    //used to clean database table if needed
     //DBHelper dbHandler = new DBHelper(this, null, null, 1);
     //dbHandler.cleanDB();
 
@@ -68,12 +61,12 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap();
-        LatLng sfsu = new LatLng(37.7223950, -122.4786140);
+        location = new LatLng(37.7223950, -122.4786140);//default location at SFSU
         map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(sfsu, 13));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13));
         Marker marker = map.addMarker(new MarkerOptions()
                 .title("San Francisco State University")
-                .position(sfsu));
+                .position(location));
         marker.showInfoWindow();
         map.setOnMapClickListener(this);
 
@@ -93,9 +86,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 //Image will be changed to streetview picture later if possible
                 TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
                 tvaddress.setText(getAddress(point.latitude, point.longitude));
+                TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
+                tvrate.setText(marker.getSnippet());
                 ImageView image = (ImageView) v.findViewById(R.id.streetview);
-
-                return  v;
+                return v;
             }
         });
     }
@@ -134,9 +128,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -162,6 +154,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         }
 
     }
+    /**
+     * This method displays a marker when users click on the map
+     * and return it as String
+     */
     @Override
     public void onMapClick(LatLng point) {
         // Clears the previously touched position
@@ -177,7 +173,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         // This will be displayed on taping the marker
         markerOptions.title(getAddress(point.latitude, point.longitude));
 
-
         // Animating to the touched position
         map.animateCamera(CameraUpdateFactory.newLatLng(point));
 
@@ -191,36 +186,31 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     /*display parking information when user click info button*/
     public void getInfo(View view) {
-        // Perform action on click
-        MarkerOptions markerOptions = new MarkerOptions();
-        if(location == null){
-            location = new LatLng(37.7223950, -122.4786140); // Setting default at SFSU
-        }
-        // Setting the position for the marker
-        markerOptions.position(location);
+            // Perform action on click
+            MarkerOptions markerOptions = new MarkerOptions();
+            // Setting the position for the marker
+            markerOptions.position(location);
 
-        getSFParkInfo();// call the method to get SFPark information
+            getSFParkInfo(location.latitude,location.longitude);// call the method to get SFPark information
 
-        //NEED TO CHANGE THIS LINE
-        if (sfpInfo.size() > 0) {
-            markerOptions.title("Rate");
-            markerOptions.snippet(sfpInfo.get(0).getRATES().toString());
-        } else {
-            markerOptions.title("Rate");
-            markerOptions.snippet("Undetected");
-        }
+            //NEED TO CHANGE THIS LINE
+            if (sfpInfo.size() > 0) {
+                markerOptions.title(getAddress(location.latitude, location.longitude));
+                markerOptions.snippet("Rate\n" + sfpInfo.get(0).getRATES().toString());
+            } else {
+                markerOptions.title(getAddress(location.latitude, location.longitude));
+                markerOptions.snippet("Rate: Undetected");
+            }
 
-        map.clear();//clear marker on the map
-        displayParkingInfo(markerOptions,"getInfo");
+            map.clear();//clear marker on the map
+            displayParkingInfo(markerOptions);
+
 
     }
 
     public void setParking(View view) {
         // Perform action on click
         //MarkerOptions markerOptions = new MarkerOptions();
-        if(location == null){
-            location = new LatLng(37.7223950, -122.4786140); // Setting default at SFSU
-        }
 
         MarkerOptions markerOptions = new MarkerOptions();
         // Setting the position for the marker
@@ -253,59 +243,98 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             }
         }
 
-        getSFParkInfo();// call the method to get SFPark information
+        getSFParkInfo(location.latitude,location.longitude);// call the method to get SFPark information
 
         if (sfpInfo.size() > 0) {
-            markerOptions.title("Rate");
-            markerOptions.snippet(sfpInfo.get(0).getRATES().toString());
+            markerOptions.title(getAddress(location.latitude, location.longitude));
+            markerOptions.snippet("Rate\n"+sfpInfo.get(0).getRATES().toString());
         } else {
-            markerOptions.title("Rate");
-            markerOptions.snippet("Undetected");
+            markerOptions.title(getAddress(location.latitude, location.longitude));
+            markerOptions.snippet("Rate: Undetected");
         }
 
         map.clear();
-        displayParkingInfo(markerOptions,"setParking");
+        displayParkingInfo(markerOptions);
     }
 
-    /* Display 5 latest parking*/
+    /**
+     *
+     * @param view connect to custom_info_window.ext to present data from SFPark on InfoWindow
+     */
     public void showRecentParking(View view) {
         //retrieve data from DB
         System.out.println("Show recent parking");
-    }
+        DBHelper dbHandler = new DBHelper(this, null, null, 1);
 
-    public void displayParkingInfo(MarkerOptions markerOptions, final String type){
-        Marker marker1= map.addMarker(markerOptions);// add a new marker
-        marker1.showInfoWindow();
-
-        //Display Rate from SFPark on infoWindow
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
+        ArrayList<Location> locations = dbHandler.getRecentParking();
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
+        for (int i=0;i<locations.size();i++) {
+            Location loc = locations.get(i);
+            System.out.println("latitude: "+loc.getLatitude()+", longitude: "+loc.getLongitude());
+            BitmapDescriptor bitmapMarker;
+            if(i+1==1){
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
+            }else if(i+1==2){
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+            }else if(i+1==3){
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+            }else if(i+1==4){
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
+            }else {
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
             }
+            getSFParkInfo(loc.getLatitude(),loc.getLongitude());
+            String sfInfo;
+            if(sfpInfo.size()>0){
+                sfInfo = "Rate\n"+sfpInfo.get(0).getRATES().toString();
+            }else{
+                sfInfo = "Rate : Undetected";
+            }
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
+                    .title(getAddress(loc.getLatitude(),loc.getLongitude()))
+                    .snippet(sfInfo)
+                    .icon(bitmapMarker));
+            System.out.println("snippet : "+sfInfo);
+        }
+    }
+    /*display information from SFPark into info window and change style of the marker*/
+    public void displayParkingInfo(MarkerOptions markerOptions){
+        try{
+            Marker marker1= map.addMarker(markerOptions);// add a new marker
+            marker1.showInfoWindow();
 
-            @Override
-            public View getInfoContents(Marker marker) {
-                View v = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-                TextView txtCanPark = (TextView) v.findViewById(R.id.parkingInfo);
-                txtCanPark.setText(marker.getTitle());
-
-
-                TextView snippetUi = ((TextView) v.findViewById(R.id.snippet));
-                snippetUi.setText(marker.getSnippet());
-
-                ImageView icon = ((ImageView) v.findViewById(R.id.badge));
-                if(type.equalsIgnoreCase("setParking")){
-                    icon.setImageResource(R.drawable.darkgreen_parking);
-                }else{
-                    icon.setImageResource(R.drawable.red_marker_info);
+            //Display Rate from SFPark on infoWindow
+            map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
                 }
-                return  v;
-            }
-        });
+
+                @Override
+                public View getInfoContents(Marker marker) {
+
+
+                        View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
+
+                        TextView tvaddress = (TextView) v.findViewById(R.id.parkingInfo);
+                        tvaddress.setText(marker.getTitle());
+
+
+                        TextView tvrate = ((TextView) v.findViewById(R.id.snippet));
+                        tvrate.setText(marker.getSnippet());
+
+                    return  v;
+                }
+            });
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
-    private void getSFParkInfo(){
+    private void getSFParkInfo(double latitude, double longtitude){
         SFPark.FeedTask feedTask = new SFPark.FeedTask(new AsyncResponse() {
 
             /**
@@ -328,6 +357,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         });
 
         //Request information from the SFPark API.
-        feedTask.execute(location.latitude, location.longitude);
+        feedTask.execute(latitude, longtitude);
     }
 }
