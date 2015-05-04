@@ -1,15 +1,7 @@
 package com.example.ninjung.testgooglemapver2;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+
 import android.location.Address;
-import android.media.Image;
-import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -60,7 +52,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     //ArrayList used to store SFPark information, this is set in processFinish().
     private ArrayList<AVL> sfpInfo = new ArrayList<AVL>();
 
-    // used to clean database table if needed
+    //used to clean database table if needed
     //DBHelper dbHandler = new DBHelper(this, null, null, 1);
     //dbHandler.cleanDB();
 
@@ -101,7 +93,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 tvaddress.setText(getAddress(point.latitude, point.longitude));
                 //tvlng.setText("Longitude: " + point.longitude);
                 ImageView image = (ImageView) v.findViewById(R.id.streetview);
-
                 return  v;
             }
         });
@@ -141,9 +132,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -169,6 +158,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         }
 
     }
+    /**
+     * This method displays a marker when users click on the map
+     * and return it as String
+     */
     @Override
     public void onMapClick(LatLng point) {
         // Clears the previously touched position
@@ -182,8 +175,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         // Setting the title for the marker.
         // This will be displayed on taping the marker
-        markerOptions.title(point.latitude + " : " + point.longitude);
-        System.out.println("Latitude: "+point.latitude+" Longitude: "+point.longitude);
+        markerOptions.title(getAddress(point.latitude, point.longitude));
 
         // Animating to the touched position
         map.animateCamera(CameraUpdateFactory.newLatLng(point));
@@ -198,24 +190,25 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     /*display parking information when user click info button*/
     public void getInfo(View view) {
-        // Perform action on click
-        MarkerOptions markerOptions = new MarkerOptions();
-        // Setting the position for the marker
-        markerOptions.position(location);
+            // Perform action on click
+            MarkerOptions markerOptions = new MarkerOptions();
+            // Setting the position for the marker
+            markerOptions.position(location);
 
-        getSFParkInfo();// call the method to get SFPark information
+            getSFParkInfo(location.latitude,location.longitude);// call the method to get SFPark information
 
-        //NEED TO CHANGE THIS LINE
-        if (sfpInfo.size() > 0) {
-            markerOptions.title(getAddress(location.latitude, location.longitude));
-            markerOptions.snippet("Rate\n"+sfpInfo.get(0).getRATES().toString());
-        } else {
-            markerOptions.title(getAddress(location.latitude, location.longitude));
-            markerOptions.snippet("Rate: Undetected");
-        }
+            //NEED TO CHANGE THIS LINE
+            if (sfpInfo.size() > 0) {
+                markerOptions.title(getAddress(location.latitude, location.longitude));
+                markerOptions.snippet("Rate\n" + sfpInfo.get(0).getRATES().toString());
+            } else {
+                markerOptions.title(getAddress(location.latitude, location.longitude));
+                markerOptions.snippet("Rate: Undetected");
+            }
 
-        map.clear();//clear marker on the map
-        displayParkingInfo(markerOptions,"getInfo");
+            map.clear();//clear marker on the map
+            displayParkingInfo(markerOptions, "getInfo");
+
 
     }
 
@@ -254,7 +247,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             }
         }
 
-        getSFParkInfo();// call the method to get SFPark information
+        getSFParkInfo(location.latitude,location.longitude);// call the method to get SFPark information
 
         if (sfpInfo.size() > 0) {
             markerOptions.title(getAddress(location.latitude, location.longitude));
@@ -294,9 +287,17 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             }else {
                 bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
             }
+            getSFParkInfo(loc.getLatitude(),loc.getLongitude());
+            String sfInfo;
+            if(sfpInfo.size()>0){
+                sfInfo = "Rate\n"+sfpInfo.get(0).getRATES().toString();
+            }else{
+                sfInfo = "Rate : Undetected";
+            }
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
                     .title(getAddress(loc.getLatitude(),loc.getLongitude()))
+                    .snippet(sfInfo)
                     .icon(bitmapMarker));
         }
     }
@@ -333,7 +334,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         });
     }
 
-    private void getSFParkInfo(){
+    private void getSFParkInfo(double latitude, double longtitude){
         SFPark.FeedTask feedTask = new SFPark.FeedTask(new AsyncResponse() {
 
             /**
@@ -356,6 +357,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         });
 
         //Request information from the SFPark API.
-        feedTask.execute(location.latitude, location.longitude);
+        feedTask.execute(latitude, longtitude);
     }
 }
