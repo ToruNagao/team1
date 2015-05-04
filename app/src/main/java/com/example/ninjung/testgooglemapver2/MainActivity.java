@@ -61,6 +61,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String test = "Test String";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
