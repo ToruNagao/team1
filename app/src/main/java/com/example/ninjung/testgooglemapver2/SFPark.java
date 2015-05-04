@@ -9,20 +9,21 @@ import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.BufferedInputStream;
-import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParseException;
 
 
 
@@ -38,7 +39,7 @@ public class SFPark {
     private static String baseURL = "http://api.sfpark.org/sfpark/rest/availabilityservice?";
     private static String lati = "lat=";
     private static String longi = "long=";
-    private static String restOfURL = "&radius=0.05&uom=mile&pricing=yes&response=json"; //changed from response = xml
+    private static String restOfURL = "&radius=0.025&uom=mile&pricing=yes&response=json"; //changed from response = xml
 
     private static String jsonResult = "";
 
@@ -98,7 +99,9 @@ public class SFPark {
 
             jsonResult = result;
 
-            Gson gson = new Gson();
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(RateInfo[].class, new RSDeserializer());
+            Gson gson = gsonBuilder.create();
 
             System.out.println("Parsing JSON...");
             SFP info = gson.fromJson(jsonResult, SFP.class);
@@ -108,7 +111,11 @@ public class SFPark {
 
             //Accessing AVL ArrayList to get information from SFPark.
             if (info.getAVL().size() > 0) {
-                System.out.println("The rates are : " + info.getAVL().get(0).getRATES());
+                for (int i = 0; i < info.getAVL().size(); i++) {
+                    System.out.println("The rates on " + info.getAVL().get(i).getNAME()
+                            + " are : " + info.getAVL().get(i).getRATES());
+                }
+
                 delegate.processFinish(info.getAVL());
             } else {
                 System.out.println("No records were found!");
@@ -234,18 +241,21 @@ class AVL {
  * The class used by GSON to represent the "RATES" object in JSON.
  */
 class RATES {
-    private ArrayList<RateInfo> RS = new ArrayList<RateInfo>();
+    //private ArrayList<RateInfo> RS = new ArrayList<RateInfo>();
 
-    public ArrayList<RateInfo> getRS() {
+    private RateInfo[] RS;
+
+    public RateInfo[] getRS() {
         return RS;
     }
 
-    public void setRS(ArrayList<RateInfo> rs) {
-        this.RS = rs;
-    }
-
     public String toString() {
-        return RS.toString();
+        String rates = "";
+        for (int i = 0; i < RS.length; i++) {
+            rates += RS[i].toString();
+        }
+
+        return rates;
     }
 
 }
@@ -295,4 +305,24 @@ class RateInfo {
     public String toString() {
         return "Begin:" + BEG + " End:" + END + " Rate:" + RATE + " Rate Qualifier:" + RQ + "\n";
     }
+}
+
+/**
+ * Used for custom deserialization of "RS" attribute. "RS" attribute in JSON data can either contain
+ * one object or an array of objects. This class detects that and properly deserializes the data.
+ */
+class RSDeserializer implements JsonDeserializer<RateInfo[]> {
+
+    @Override
+    public RateInfo[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException
+    {
+        if (json instanceof JsonArray) {
+            return new Gson().fromJson(json, RateInfo[].class);
+        }
+        RateInfo rI = context.deserialize(json, RateInfo.class);
+
+        return new RateInfo[] { rI };
+    }
+
 }

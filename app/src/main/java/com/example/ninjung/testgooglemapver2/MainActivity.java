@@ -256,7 +256,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         getSFParkInfo();// call the method to get SFPark information
 
-        //NEED TO CHANGE THIS LINE
         if (sfpInfo.size() > 0) {
             markerOptions.title(getAddress(location.latitude, location.longitude));
             markerOptions.snippet("Rate\n"+sfpInfo.get(0).getRATES().toString());
@@ -349,7 +348,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
                 //Printing for debugging purposes, delete this later...
                 if (avl.size() > 0) {
-                    System.out.println("The rate in AM is " + avl.get(0).getRATES());
+                    System.out.println("The rate of avl.get(0) in MainActivity is " + avl.get(0).getRATES());
                 } else {
                     System.out.println("The size of AVL is 0 in MainActivity.java!");
                 }
