@@ -1,9 +1,5 @@
 package com.example.ninjung.testgooglemapver2;
 
-/**
- * Created by Toru on 2015/04/26.
- */
-
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Bundle;
@@ -25,6 +21,11 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.splash);
         int delay = 1000;
         Handler hdl = new Handler();
+
+        // exits immediately if there is no internet connection
+        if ( !(new ConnectionDetector(getApplicationContext())).isConnectingToInternet() ) {
+            System.exit(1);
+        }
 
         //x ms delay before runs splashHandler
         hdl.postDelayed(new splashHandler(), delay);
