@@ -1,9 +1,5 @@
 package com.example.ninjung.testgooglemapver2;
 
-/**
- * Created by ninjung on 4/20/15.
- */
-
 import android.os.AsyncTask;
 
 import java.io.BufferedReader;
@@ -60,7 +56,7 @@ public class SFPark {
         /**
          * This method can be executed in onCreate() and allows user to perform networking operations
          * on a separate thread.
-         * @param coords Doubles representing Latitude and Longitude.
+         * @param coords: Doubles representing Latitude and Longitude.
          * @return Parking information from SFPark with specified Latitude and Longitude.
          */
         protected String doInBackground(Double... coords) {
@@ -182,6 +178,12 @@ class SFP {
         return AVL;
     }
 
+    /**
+     * Get the status of the JSON request, the number of records found by the SFPark API and a
+     * message containing the number of records.
+     * @return String containing the status of the JSON request, the number of records found by
+     * the SFPark API and a message containing the number of records.
+     */
     @Override
     public String toString() {
         return "STATUS=" + STATUS + ", NUM_RECORDS=" + NUM_RECORDS + ", MESSAGE=" + MESSAGE;
@@ -231,6 +233,10 @@ class AVL {
         return RATES;
     }
 
+    /**
+     * Get the type of parking and names of the street.
+     * @return String containing the type of parking and name of street.
+     */
     @Override
     public String toString() {
         return "TYPE=" + TYPE + ", NAME=" + NAME;
@@ -241,14 +247,20 @@ class AVL {
  * The class used by GSON to represent the "RATES" object in JSON.
  */
 class RATES {
-    //private ArrayList<RateInfo> RS = new ArrayList<RateInfo>();
-
     private RateInfo[] RS;
 
+    /**
+     * Get all items on rate information.
+     * @return Array of RateInfo objects containing data on rate information.
+     */
     public RateInfo[] getRS() {
         return RS;
     }
 
+    /**
+     * Get a string of all of the data on rate information.
+     * @return String containing all of the data on rate information.
+     */
     public String toString() {
         String rates = "";
         for (int i = 0; i < RS.length; i++) {
@@ -301,6 +313,11 @@ class RateInfo {
         return RQ;
     }
 
+    /**
+     * Get the beginning and ending times, the rate and rate qualifier of a parking meter.
+     * @return String containing the beginning and ending times, the rate and rate qualifier
+     * of a parking meter.
+     */
     @Override
     public String toString() {
         return "Begin:" + BEG + " End:" + END + " Rate:" + RATE + " Rate Qualifier:" + RQ + "\n";
@@ -312,6 +329,15 @@ class RateInfo {
  * one object or an array of objects. This class detects that and properly deserializes the data.
  */
 class RSDeserializer implements JsonDeserializer<RateInfo[]> {
+
+    /**
+     *
+     * @param json: Instance of JSON element.
+     * @param typeOfT: Type of JSON element.
+     * @param context: Context of JSON object.
+     * @return An array of RateInfo objects containing the deserialized information from the JSON data.
+     * @throws JsonParseException
+     */
 
     @Override
     public RateInfo[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
