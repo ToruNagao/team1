@@ -48,15 +48,17 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     //ArrayList used to store SFPark information, this is set in processFinish().
     private ArrayList<AVL> sfpInfo = new ArrayList<AVL>();
 
-    //used to clean database table if needed
-    //DBHelper dbHandler = new DBHelper(this, null, null, 1);
-    //dbHandler.cleanDB();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String test = "Test String";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //used to clean database table if needed
+        //DBHelper dbHandler = new DBHelper(this, null, null, 1);
+        //dbHandler.cleanDB();
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -221,20 +223,16 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         buttonCounter++;
         if((buttonCounter%2) == 1) {
             DBHelper dbHandler = new DBHelper(this, null, null, 1);
-
-            Location parked =
-                    new Location(location.latitude, location.longitude);
-
-            dbHandler.addLocation(parked);
+            dbHandler.addLocation(location);
         }
         else {
             DBHelper dbHandler = new DBHelper(this, null, null, 1);
 
-            Location parked = dbHandler.findLocation(dbHandler.getRowCount());
+            LatLng parked = dbHandler.findLocation(dbHandler.getNaxID());
 
             if (parked != null) {
                 Toast.makeText(getApplicationContext(),
-                        "Lat: " + parked.getLatitude() + "\nLong: " + parked.getLongitude(),
+                        "Lat: " + parked.latitude + "\nLong: " + parked.longitude,
                         Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(),
@@ -266,11 +264,11 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         System.out.println("Show recent parking");
         DBHelper dbHandler = new DBHelper(this, null, null, 1);
 
-        ArrayList<Location> locations = dbHandler.getRecentParking();
+        ArrayList<LatLng> locations = dbHandler.getRecentParking();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
         for (int i=0;i<locations.size();i++) {
-            Location loc = locations.get(i);
-            System.out.println("latitude: "+loc.getLatitude()+", longitude: "+loc.getLongitude());
+            LatLng loc = locations.get(i);
+            System.out.println("latitude: "+loc.latitude+", longitude: "+loc.longitude);
             BitmapDescriptor bitmapMarker;
             if(i+1==1){
                 bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
@@ -283,7 +281,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             }else {
                 bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
             }
-            getSFParkInfo(loc.getLatitude(),loc.getLongitude());
+            getSFParkInfo(loc.latitude,loc.longitude);
             String sfInfo;
             if(sfpInfo.size()>0){
                 sfInfo = "Rate\n"+sfpInfo.get(0).getRATES().toString();
@@ -291,8 +289,8 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 sfInfo = "Rate : Undetected";
             }
             map.addMarker(new MarkerOptions()
-                    .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
-                    .title(getAddress(loc.getLatitude(),loc.getLongitude()))
+                    .position(new LatLng(loc.latitude, loc.longitude))
+                    .title(getAddress(loc.latitude,loc.longitude))
                     .snippet(sfInfo)
                     .icon(bitmapMarker));
             System.out.println("snippet : "+sfInfo);
