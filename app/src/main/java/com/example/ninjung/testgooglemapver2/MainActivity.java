@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
 public class MainActivity extends FragmentActivity implements GoogleMap.OnMapClickListener {
 
     final int RQS_GooglePlayServices = 1;
@@ -89,11 +90,8 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
                 //Text and image to be displayed in this custom window
                 //Image will be changed to streetview picture later if possible
-                //TextView tvLat = (TextView) v.findViewById(R.id.tv_lat);
-                //TextView tvlng = (TextView) v.findViewById(R.id.tv_lng);
                 TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
                 tvaddress.setText(getAddress(point.latitude, point.longitude));
-                //tvlng.setText("Longitude: " + point.longitude);
                 ImageView image = (ImageView) v.findViewById(R.id.streetview);
 
                 return  v;
@@ -176,7 +174,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         // Setting the title for the marker.
         // This will be displayed on taping the marker
-        markerOptions.title(point.latitude + " : " + point.longitude);
+        markerOptions.title(getAddress(point.latitude, point.longitude));
 
 
         // Animating to the touched position
