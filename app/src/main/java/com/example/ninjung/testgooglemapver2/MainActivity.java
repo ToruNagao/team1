@@ -284,15 +284,15 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             System.out.println("latitude: "+loc.getLatitude()+", longitude: "+loc.getLongitude());
             BitmapDescriptor bitmapMarker;
             if(i+1==1){
-                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.pink_marker_a);
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
             }else if(i+1==2){
-                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.purple_marker_b);
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
             }else if(i+1==3){
-                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.blue_marker_c);
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
             }else if(i+1==4){
-                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.paleblue_marker_d);
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
             }else {
-                bitmapMarker = BitmapDescriptorFactory.fromResource(R.drawable.brown_marker_e);
+                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
             }
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
@@ -300,7 +300,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                     .icon(bitmapMarker));
         }
     }
-
+    /*display information from SFPark into info window and change style of the marker*/
     public void displayParkingInfo(MarkerOptions markerOptions, final String type){
         Marker marker1= map.addMarker(markerOptions);// add a new marker
         marker1.showInfoWindow();
