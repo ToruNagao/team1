@@ -46,8 +46,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     //ArrayList used to store SFPark information, this is set in processFinish().
     private ArrayList<AVL> sfpInfo = new ArrayList<AVL>();
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,30 +75,6 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         Marker marker = map.addMarker(markerOptions);
         marker.showInfoWindow();
         map.setOnMapClickListener(this);
-
-        //Handles custom info window on map click
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
-                LatLng point = marker.getPosition();
-
-                //Text and image to be displayed in this custom window
-                //Image will be changed to streetview picture later if possible
-                TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
-                tvaddress.setText(getAddress(point.latitude, point.longitude));
-                TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
-                tvrate.setText(marker.getSnippet());
-                ImageView image = (ImageView) v.findViewById(R.id.streetview);
-                return v;
-            }
-        });
-
     }
 
     /**
@@ -207,7 +181,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 tvaddress.setText(marker.getTitle());
                 TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
                 tvrate.setText(marker.getSnippet());
-                ImageView image = (ImageView) v.findViewById(R.id.streetview);
+                //ImageView image = (ImageView) v.findViewById(R.id.streetview);
                 return v;
             }
         });
@@ -257,13 +231,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 tvaddress.setText(marker.getTitle());
                 TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
                 tvrate.setText(marker.getSnippet());
-                ImageView image = (ImageView) v.findViewById(R.id.streetview);
+                //ImageView image = (ImageView) v.findViewById(R.id.streetview);
                 return v;
             }
         });
-
-
-
     }
 
     /**
@@ -334,7 +305,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 tvaddress.setText(getAddress(point.latitude, point.longitude));
                 TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
                 tvrate.setText(marker.getSnippet());
-                ImageView image = (ImageView) v.findViewById(R.id.streetview);
+                //ImageView image = (ImageView) v.findViewById(R.id.streetview);
                 return v;
             }
         });
