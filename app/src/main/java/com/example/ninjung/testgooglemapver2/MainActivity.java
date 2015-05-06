@@ -164,20 +164,21 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     }
     /**
-     * This method displays a marker when users click on the map
-     * and return it as String
+     * This method displays a marker on a location that users click on the map
+     * @param point - contains Latitude and Longitude on the location that users click on the map
      */
     @Override
     public void onMapClick(LatLng point) {
         // Clears the previously touched position
         map.clear();
 
-        /*display street view*/
+        //display street views on top of the map
         StreetViewPanoramaFragment streetViewPanoramaFragment =
                 (StreetViewPanoramaFragment) getFragmentManager()
                         .findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
 
+        // add contents into infoWindow
         location= point;
         MarkerOptions markerOptions = new MarkerOptions()
                 .title(getAddress(location.latitude,location.longitude))
@@ -187,6 +188,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
         // Animating to the touched position
         map.animateCamera(CameraUpdateFactory.newLatLng(point));
+
         //Handles custom info window on map click
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
@@ -213,7 +215,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     }
 
-    /*display parking information when user click info button*/
+    /**
+     * display parking information SFPark on an InfoWindow when user click the info button
+     * @param view - connect to custom_info_window.xml to present data from SFPark on InfoWindow
+     */
     public void getInfo(View view) {
             getSFParkInfo(location.latitude,location.longitude);// call the method to get SFPark information
             // Perform action on click
@@ -261,14 +266,12 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     }
 
+    /**
+     * perform after a user click on the parking button
+     * the parking marker will replace the current marker and the location on the marker will be stored in the Database
+     * @param view
+     */
     public void setParking(View view) {
-        // Perform action on click
-        //MarkerOptions markerOptions = new MarkerOptions();
-
-        MarkerOptions markerOptions = new MarkerOptions();
-        // Setting the position for the marker
-        markerOptions.position(location);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
 
         //storing location to DB
         buttonCounter++;
@@ -292,8 +295,15 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             }
         }
 
-        getSFParkInfo(location.latitude,location.longitude);// call the method to get SFPark information
+        // Replace a previous marker to a parking marker
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(location);
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
 
+        // call the method to get SFPark information
+        getSFParkInfo(location.latitude,location.longitude);
+
+        // add information from SFParking into InfoWindow
         if (sfpInfo.size() > 0) {
             markerOptions.title(getAddress(location.latitude, location.longitude));
             markerOptions.snippet("Rate\n"+sfpInfo.get(0).getRATES().toString());
@@ -301,8 +311,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             markerOptions.title(getAddress(location.latitude, location.longitude));
             markerOptions.snippet("Rate: Undetected");
         }
-
+        // delete previous markers on the map
         map.clear();
+
+        //present information on Info Window
         Marker marker = map.addMarker(markerOptions);
         marker.showInfoWindow();
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -330,15 +342,17 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
     /**
      *
-     * @param view connect to custom_info_window.ext to present data from SFPark on InfoWindow
+     * @param view - connect to custom_info_window.xml to present data from SFPark on InfoWindow
      */
     public void showRecentParking(View view) {
-        //retrieve data from DB
-        System.out.println("Show recent parking");
+        //retrieve last 5 previous parking information from the DataBase
         DBHelper dbHandler = new DBHelper(this, null, null, 1);
-
         ArrayList<LatLng> locations = dbHandler.getRecentParking();
+
+        // zoom out the map to present the previous parking appropriately
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
+
+        // display previous parking in different color
         for (int i=0;i<locations.size();i++) {
             LatLng loc = locations.get(i);
             System.out.println("latitude: "+loc.latitude+", longitude: "+loc.longitude);
@@ -354,6 +368,8 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             }else {
                 bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
             }
+
+            // get information from SFPark
             getSFParkInfo(loc.latitude,loc.longitude);
             String sfInfo;
             if(sfpInfo.size()>0){
@@ -361,12 +377,12 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
             }else{
                 sfInfo = "Rate : Undetected";
             }
+            // add information into InfoWindow
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(loc.latitude, loc.longitude))
                     .title(getAddress(loc.latitude,loc.longitude))
                     .snippet(sfInfo)
                     .icon(bitmapMarker));
-            System.out.println("snippet : "+sfInfo);
         }
     }
 
@@ -398,6 +414,10 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         feedTask.execute(latitude, longtitude);
     }
 
+    /**
+     * a callback method to retrieve a non-null instance of StreetViewPanorama, ready to be used.
+     * @param streetViewPanorama
+     */
     @Override
     public void onStreetViewPanoramaReady(StreetViewPanorama streetViewPanorama) {
         streetViewPanorama.setPosition(location);
