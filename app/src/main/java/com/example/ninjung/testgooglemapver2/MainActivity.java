@@ -55,26 +55,29 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         //DBHelper dbHandler = new DBHelper(this, null, null, 1);
         //dbHandler.cleanDB();
 
+        // get a handle on GoogleMap Fragment
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
-        map = mapFragment.getMap();
-        location = new LatLng(37.7223950, -122.4786140);//default location at SFSU
+        map = mapFragment.getMap(); //instantiate Google Map object
+        location = new LatLng(37.7223950, -122.4786140);// set default location at SFSU
 
+        // get a handle on streetViewPanorama fragment
         StreetViewPanoramaFragment streetViewPanoramaFragment =
                 (StreetViewPanoramaFragment) getFragmentManager()
                         .findFragmentById(R.id.streetviewpanorama);
-        streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
+        streetViewPanoramaFragment.getStreetViewPanoramaAsync(this); // call back on the fragment to execute onStreetViewPanoramaReady()
 
-
+        // enable current location
         map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13));
-        MarkerOptions markerOptions = new MarkerOptions()
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13)); // set zoom on the map
+        MarkerOptions markerOptions = new MarkerOptions() // add content on the marker
                 .title(getAddress(location.latitude,location.longitude))
                 .position(location);
 
+        // add the marker on the map
         Marker marker = map.addMarker(markerOptions);
-        marker.showInfoWindow();
-        map.setOnMapClickListener(this);
+        marker.showInfoWindow(); // display infoWindow
+        map.setOnMapClickListener(this); // call onMapClick() when users click on the map
     }
 
     /**
@@ -238,8 +241,8 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     }
 
     /**
-     * perform after a user click on the parking button
-     * the parking marker will replace the current marker and the location on the marker will be stored in the Database
+     * perform when a user click on the parking button
+     * the parking marker will replace the current marker and current marker location will be stored in the Database
      * @param view
      */
     public void setParking(View view) {
@@ -312,7 +315,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
     }
 
     /**
-     *
+     * display last 5 previous parking on the map when user click showRecentParking button
      * @param view - connect to custom_info_window.xml to present data from SFPark on InfoWindow
      */
     public void showRecentParking(View view) {
