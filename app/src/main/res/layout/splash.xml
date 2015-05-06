@@ -3,21 +3,13 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
+    android:gravity="bottom|left">
+
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="centerInside"
-        android:src="@drawable/splash"
-        />
-    
-    <ProgressBar
-        android:id="@+id/progBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="100"
-        android:layout_alignParentBottom='true'
-        android:layout_centerHorizontal="true"
-        />
+        android:id="@+id/tireImage"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/tireonly"
+        android:layout_gravity="center_horizontal|bottom" />
+
 </LinearLayout>
