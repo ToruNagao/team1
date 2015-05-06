@@ -7,12 +7,18 @@ import android.view.Window;
 import android.content.Intent;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
-public class SplashActivity extends Activity {
+public class
+        SplashActivity extends Activity {
     //ProgressBar progressBar;
     //int progress = 100;
     //Handler handler = new Handler();
     //TextView textView;
+
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +32,10 @@ public class SplashActivity extends Activity {
         if ( !(new ConnectionDetector(getApplicationContext())).isConnectingToInternet() ) {
             System.exit(1);
         }
+
+        imageView = (ImageView) findViewById(R.id.tireImage);
+        final Animation animRotate = AnimationUtils.loadAnimation(this,R.anim.rotate);
+        imageView.startAnimation(animRotate);
 
         //x ms delay before runs splashHandler
         hdl.postDelayed(new splashHandler(), delay);
