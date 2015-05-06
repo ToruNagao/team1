@@ -42,6 +42,11 @@
             android:onClick="showRecentParking"/>
     </LinearLayout>
     <fragment
+        android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
+        android:id="@+id/streetviewpanorama"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
+    <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
