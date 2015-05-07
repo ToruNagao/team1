@@ -1,7 +1,9 @@
 package com.example.ninjung.testgooglemapver2;
 
 
+import android.content.Intent;
 import android.location.Address;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,8 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.google.android.gms.maps.GoogleMap.*;
 
-public class MainActivity extends FragmentActivity implements GoogleMap.OnMapClickListener
+
+public class MainActivity extends FragmentActivity implements OnMapClickListener
         , OnStreetViewPanoramaReadyCallback {
 
     final int RQS_GooglePlayServices = 1;
@@ -55,14 +59,15 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap(); //instantiate Google Map object
         location = new LatLng(37.7223950, -122.4786140);// set default location at SFSU
+
         // get a handle on streetViewPanorama fragment
         StreetViewPanoramaFragment streetViewPanoramaFragment =
                 (StreetViewPanoramaFragment) getFragmentManager()
                         .findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this); // call back on the fragment to execute onStreetViewPanoramaReady()
 
-        // enable current location
-        map.setMyLocationEnabled(true);
+
+        map.setMyLocationEnabled(true); // enable current location
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13)); // set zoom on the map
         MarkerOptions markerOptions = new MarkerOptions() // add content on the marker
                 .title(getAddress(location.latitude,location.longitude))
@@ -146,8 +151,9 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         // Clear previous SFPark information
         sfpInfo.clear();
 
+        location= point;
         // call the method to get SFPark information
-        getSFParkInfo(point.latitude,point.longitude);
+        getSFParkInfo(location.latitude, location.longitude);
 
         //display street views on top of the map
         StreetViewPanoramaFragment streetViewPanoramaFragment =
@@ -155,39 +161,15 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
                         .findFragmentById(R.id.streetviewpanorama);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
 
-        // add contents into infoWindow
-        location= point;
-        MarkerOptions markerOptions = new MarkerOptions()
-                .title(getAddress(location.latitude,location.longitude))
-                .position(location);
-        Marker marker = map.addMarker(markerOptions);
-        marker.showInfoWindow();
-
         // Animating to the touched position
         map.animateCamera(CameraUpdateFactory.newLatLng(point));
 
-        //Handles custom info window on map click
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
+        // add contents into infoWindow
+        MarkerOptions markerOptions = new MarkerOptions()
+                .title(getAddress(location.latitude,location.longitude))
+                .position(location);
 
-            @Override
-            public View getInfoContents(Marker marker) {
-                View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
-                LatLng point = marker.getPosition();
-
-                //Text and image to be displayed in this custom window
-                TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
-                tvaddress.setText(marker.getTitle());
-                TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
-                tvrate.setText(marker.getSnippet());
-                return v;
-            }
-        });
-
-
+        displayInfoWindow(markerOptions);
     }
 
     /**
@@ -195,44 +177,19 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
      * @param view - connect to custom_info_window.xml to present data from SFPark on InfoWindow
      */
     public void getInfo(View view) {
-
             MarkerOptions markerOptions = new MarkerOptions();
             // Setting the position for the marker
             markerOptions.position(location);
             markerOptions.title(getAddress(location.latitude, location.longitude));
 
-
-
             if (sfpInfo.size() > 0) {
-                System.out.println("size>1");
-                markerOptions.snippet("Rate\n" + sfpInfo.get(0).getRATES().toString());
+                markerOptions.snippet("RATE\n" + sfpInfo.get(0).getRATES().toString());
             } else {
-                System.out.println("size=0");
-                markerOptions.snippet("Rate: Undetected");
+                markerOptions.snippet("RATE: Undetected");
             }
 
             map.clear();//clear marker on the map
-            Marker marker = map.addMarker(markerOptions);
-            marker.showInfoWindow();
-            map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
-                LatLng point = marker.getPosition();
-
-                //Text and image to be displayed in this custom window
-                TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
-                tvaddress.setText(marker.getTitle());
-                TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
-                tvrate.setText(marker.getSnippet());
-                return v;
-            }
-        });
+            displayInfoWindow(markerOptions);
     }
 
     /**
@@ -284,29 +241,7 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         map.clear();
 
         //present information on Info Window
-        Marker marker = map.addMarker(markerOptions);
-        marker.showInfoWindow();
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
-                LatLng point = marker.getPosition();
-
-                //Text and image to be displayed in this custom window
-                //Image will be changed to streetview picture later if possible
-                TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
-                tvaddress.setText(getAddress(point.latitude, point.longitude));
-                TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
-                tvrate.setText(marker.getSnippet());
-                //ImageView image = (ImageView) v.findViewById(R.id.streetview);
-                return v;
-            }
-        });
+        displayInfoWindow(markerOptions);
     }
 
     /**
@@ -339,17 +274,11 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
 
             // get information from SFPark
             getSFParkInfo(loc.latitude,loc.longitude);
-            String sfInfo;
-            if(sfpInfo.size()>0){
-                sfInfo = "RATE\n"+sfpInfo.get(0).getRATES().toString();
-            }else{
-                sfInfo = "RATE : Undetected";
-            }
+
             // add information into InfoWindow
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(loc.latitude, loc.longitude))
                     .title(getAddress(loc.latitude,loc.longitude))
-                    .snippet(sfInfo)
                     .icon(bitmapMarker));
         }
     }
@@ -391,5 +320,36 @@ public class MainActivity extends FragmentActivity implements GoogleMap.OnMapCli
         streetViewPanorama.setPosition(location);
     }
 
+    private void displayInfoWindow(MarkerOptions markerOptions){
+        Marker marker = map.addMarker(markerOptions);
+        marker.showInfoWindow();
+        map.setInfoWindowAdapter(new InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
+                LatLng point = marker.getPosition();
+
+                //Text and image to be displayed in this custom window
+                TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
+                tvaddress.setText(getAddress(point.latitude, point.longitude));
+                TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
+                tvrate.setText(marker.getSnippet());
+                return v;
+            }
+        });
+    }
+    public void direction(View view){
+        String uri = "http://maps.google.com/maps?saddr="+"37.757246, -122.492774"+"&daddr="+"37.753582, -122.489126&dirflg=w";
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+        //Uri gmmIntentUri = Uri.parse("google.navigation:q=37.7223950, -122.4786140&mode=b");
+        //Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        intent.setPackage("com.google.android.apps.maps");
+        startActivity(intent);
+    }
 
 }

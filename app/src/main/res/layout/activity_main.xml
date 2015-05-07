@@ -41,6 +41,14 @@
             android:paddingRight="10dp"
             android:onClick="showRecentParking"/>
     </LinearLayout>
+    <Button
+        android:id="@+id/getDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Direction"
+        android:padding="10dp"
+        android:paddingRight="10dp"
+        android:onClick="direction"/>
     <fragment
         android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
         android:id="@+id/streetviewpanorama"
