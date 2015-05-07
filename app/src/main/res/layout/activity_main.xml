@@ -17,11 +17,8 @@
             android:id="@+id/getinfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Get Info"
+            android:text="Info"
             android:padding="10dp"
-            android:layout_marginLeft="10dp"
-            android:paddingRight="50dp"
-            android:layout_marginRight="40dp"
             android:onClick="getInfo"/>
         <Button
             android:id="@+id/setparking"
@@ -29,8 +26,6 @@
             android:layout_height="wrap_content"
             android:text="Park"
             android:padding="10dp"
-            android:paddingRight="50dp"
-            android:layout_marginRight="40dp"
             android:onClick="setParking"/>
         <Button
             android:id="@+id/showRecentParking"
@@ -38,17 +33,15 @@
             android:layout_height="wrap_content"
             android:text="Recent"
             android:padding="10dp"
-            android:paddingRight="10dp"
             android:onClick="showRecentParking"/>
+        <Button
+            android:id="@+id/getDirection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Route"
+            android:padding="10dp"
+            android:onClick="direction"/>
     </LinearLayout>
-    <Button
-        android:id="@+id/getDirection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Direction"
-        android:padding="10dp"
-        android:paddingRight="10dp"
-        android:onClick="direction"/>
     <fragment
         android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
         android:id="@+id/streetviewpanorama"
@@ -63,6 +56,4 @@
         map:cameraZoom="13"
         map:mapType="normal"
     />
-
-
 </LinearLayout>

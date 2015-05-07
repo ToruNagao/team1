@@ -145,4 +145,26 @@ public class DBHelper extends SQLiteOpenHelper{
         return locations;
     }
 
+    public LatLng getLastestParking(){
+        String query = "select "+COLUMN_LATITUDE+", "+ COLUMN_LONGITUDE+
+                " from " + TABLE_LOCATIONS +
+                " where " +COLUMN_ID+
+                " =(select max("+COLUMN_ID+") from "+TABLE_LOCATIONS+")";
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        LatLng location = null;
+        if(cursor.moveToFirst()){
+                double latitude, longitude;
+                latitude = Double.parseDouble(cursor.getString(0));
+                longitude = Double.parseDouble(cursor.getString(1));
+                location = new LatLng(latitude,longitude);
+        }
+        db.close();
+        return location;
+    }
+
 }

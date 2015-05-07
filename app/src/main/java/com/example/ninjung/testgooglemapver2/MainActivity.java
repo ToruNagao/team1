@@ -344,12 +344,14 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         });
     }
     public void direction(View view){
-        String uri = "http://maps.google.com/maps?saddr="+"37.757246, -122.492774"+"&daddr="+"37.753582, -122.489126&dirflg=w";
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
-        //Uri gmmIntentUri = Uri.parse("google.navigation:q=37.7223950, -122.4786140&mode=b");
-        //Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        intent.setPackage("com.google.android.apps.maps");
-        startActivity(intent);
+        DBHelper dbHandler = new DBHelper(this, null, null, 1);
+        LatLng location = dbHandler.getLastestParking();
+        //String uri = "http://maps.google.com/maps?saddr="+"37.757246, -122.492774"+"&daddr="+location.latitude+","+location.longitude+"&dirflg=w";
+        //Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+        Uri gmmIntentUri = Uri.parse("google.navigation:q="+location.latitude+","+ location.latitude+"&mode=w");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
     }
 
 }
