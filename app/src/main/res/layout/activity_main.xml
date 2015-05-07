@@ -27,7 +27,7 @@
             android:id="@+id/setparking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Parking"
+            android:text="Park"
             android:padding="10dp"
             android:paddingRight="50dp"
             android:layout_marginRight="40dp"
