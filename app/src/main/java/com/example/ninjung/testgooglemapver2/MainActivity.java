@@ -348,7 +348,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         LatLng location = dbHandler.getLastestParking();
         //String uri = "http://maps.google.com/maps?saddr="+"37.757246, -122.492774"+"&daddr="+location.latitude+","+location.longitude+"&dirflg=w";
         //Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
-        Uri gmmIntentUri = Uri.parse("google.navigation:q="+location.latitude+","+ location.latitude+"&mode=w");
+        Uri gmmIntentUri = Uri.parse("google.navigation:q="+location.latitude+","+ location.longitude+"&mode=w");
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
