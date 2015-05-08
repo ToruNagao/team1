@@ -320,6 +320,10 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         streetViewPanorama.setPosition(location);
     }
 
+    /**
+     * add information into infoWindow
+     * @param markerOptions - contains marker character and information
+     */
     private void displayInfoWindow(MarkerOptions markerOptions){
         Marker marker = map.addMarker(markerOptions);
         marker.showInfoWindow();
