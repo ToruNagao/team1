@@ -5,7 +5,9 @@ import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -20,7 +22,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParseException;
-
+import com.google.gson.reflect.TypeToken;
 
 
 /**
@@ -38,6 +40,9 @@ public class SFPark {
     private static String restOfURL = "&radius=0.025&uom=mile&pricing=yes&response=json"; //changed from response = xml
 
     private static String jsonResult = "";
+
+    //Flag used to determine if connection to website was successful.
+    private static boolean success = false;
 
     /**
      * Networking operations are not allowed in the main thread of the application. This innerclass
@@ -65,18 +70,28 @@ public class SFPark {
             try {
                 URL url = new URL(baseURL + lati + coords[0] + "&" + longi + coords[1] + restOfURL);
                 System.out.println(url);
-                URLConnection urlConnection = url.openConnection();
+                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
                 BufferedReader brIn = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
-                String line;
+                if (urlConnection.getResponseCode() == 200) {
+                    success = true;
+                    String line;
 
-                while ((line = brIn.readLine()) != null) {
-                    jsonData += line;
+                    while ((line = brIn.readLine()) != null) {
+                        jsonData += line;
+                    }
+
+                    brIn.close();
+
+                } else {
+                    success = false;
                 }
 
             } catch (MalformedURLException mURL) {
+                success = false;
                 System.out.println("EXCEPTION: Malformed URL!");
             } catch (IOException ioE) {
+                success = false;
                 System.out.println("EXCEPTION: I/O Exception! \"There was an error trying to open" +
                         " a connection!\"");
             }
@@ -97,28 +112,41 @@ public class SFPark {
 
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(RateInfo[].class, new RSDeserializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<ArrayList<AVL>>(){}.getType(), new AVLDeserializer());
             Gson gson = gsonBuilder.create();
 
-            System.out.println("Parsing JSON...");
-            SFP info = gson.fromJson(jsonResult, SFP.class);
+            System.out.println(jsonResult);
 
+            System.out.println("The status is " + success + ", parsing JSON.");
 
-            System.out.println("Printing the info from AVL...");
+            if (success) {
 
-            //Accessing AVL ArrayList to get information from SFPark.
-            if (info.getAVL().size() > 0) {
-                for (int i = 0; i < info.getAVL().size(); i++) {
-                    System.out.println("The rates on " + info.getAVL().get(i).getNAME()
-                            + " are : " + info.getAVL().get(i).getRATES());
+                SFP info = gson.fromJson(jsonResult, SFP.class);
+
+                //Accessing AVL ArrayList to get information from SFPark.
+                if (info.getAVL().size() > 0) {
+                    for (int i = 0; i < info.getAVL().size(); i++) {
+                        System.out.println("The rates on " + info.getAVL().get(i).getNAME()
+                                + " are : " + info.getAVL().get(i).getRATES());
+                    }
+
+                    delegate.processFinish(info.getAVL());
+                } else {
+                    System.out.println("No records were found!");
                 }
-
-                delegate.processFinish(info.getAVL());
-            } else {
-                System.out.println("No records were found!");
             }
 
         }
 
+    }
+
+    /**
+     * Get the status of opening a url connection and reading data from it. If a url is malformed or
+     * if the SFPark servers are currently down, this method would return false.
+     * @return A boolean value that determines if a url connection was successful or not.
+     */
+    public static boolean getStatus() {
+        return success;
     }
 
 }
@@ -349,6 +377,23 @@ class RSDeserializer implements JsonDeserializer<RateInfo[]> {
         RateInfo rI = context.deserialize(json, RateInfo.class);
 
         return new RateInfo[] { rI };
+    }
+}
+
+class AVLDeserializer implements JsonDeserializer<ArrayList<AVL>> {
+
+    public ArrayList<AVL> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException
+    {
+        if (json instanceof JsonArray) {
+            return new Gson().fromJson(json, new TypeToken<ArrayList<AVL>>(){}.getType());
+        }
+        AVL aVL = context.deserialize(json, AVL.class);
+
+        ArrayList<AVL> temp = new ArrayList<AVL>();
+        temp.add(aVL);
+
+        return temp;
     }
 
 }
