@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,7 +21,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParseException;
-
+import com.google.gson.reflect.TypeToken;
 
 
 /**
@@ -97,7 +98,10 @@ public class SFPark {
 
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.registerTypeAdapter(RateInfo[].class, new RSDeserializer());
+            gsonBuilder.registerTypeAdapter(new TypeToken<ArrayList<AVL>>(){}.getType(), new AVLDeserializer());
             Gson gson = gsonBuilder.create();
+
+            System.out.println(jsonResult);
 
             System.out.println("Parsing JSON...");
             SFP info = gson.fromJson(jsonResult, SFP.class);
@@ -349,6 +353,23 @@ class RSDeserializer implements JsonDeserializer<RateInfo[]> {
         RateInfo rI = context.deserialize(json, RateInfo.class);
 
         return new RateInfo[] { rI };
+    }
+}
+
+class AVLDeserializer implements JsonDeserializer<ArrayList<AVL>> {
+
+    public ArrayList<AVL> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException
+    {
+        if (json instanceof JsonArray) {
+            return new Gson().fromJson(json, new TypeToken<ArrayList<AVL>>(){}.getType());
+        }
+        AVL aVL = context.deserialize(json, AVL.class);
+
+        ArrayList<AVL> temp = new ArrayList<AVL>();
+        temp.add(aVL);
+
+        return temp;
     }
 
 }
