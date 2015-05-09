@@ -199,49 +199,53 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
      */
     public void setParking(View view) {
 
-        //storing location to DB
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
         buttonCounter++;
-        if((buttonCounter%2) == 1) {
+        if ((buttonCounter % 2) == 1) {
+
+
+            // Setting the position for the marker
+            markerOptions.position(location);
+
+            //storing location to DB
             DBHelper dbHandler = new DBHelper(this, null, null, 1);
             dbHandler.addLocation(location);
-        }
-        else {
+            Toast.makeText(getApplicationContext(),
+                    "Parking location saved.",
+                    Toast.LENGTH_LONG).show();
+            getSFParkInfo(location.latitude, location.longitude);// call the method to get SFPark information
+
+            if (sfpInfo.size() > 0) {
+                markerOptions.title(getAddress(location.latitude, location.longitude));
+                markerOptions.snippet("Rate\n" + sfpInfo.get(0).getRATES().toString());
+            } else {
+                markerOptions.title(getAddress(location.latitude, location.longitude));
+                markerOptions.snippet("Rate: Undetected");
+            }
+
+            map.clear();
+            displayInfoWindow(markerOptions);
+        } else {
             DBHelper dbHandler = new DBHelper(this, null, null, 1);
 
             LatLng parked = dbHandler.findLocation(dbHandler.getNaxID());
+            location = parked;
 
             if (parked != null) {
                 Toast.makeText(getApplicationContext(),
-                        "Lat: " + parked.latitude + "\nLong: " + parked.longitude,
+                        "Retrieved",
                         Toast.LENGTH_LONG).show();
+                onMapClick(location);
+                markerOptions.position(location);
+                map.clear();
+                displayInfoWindow(markerOptions);
             } else {
                 Toast.makeText(getApplicationContext(),
                         "No records found.",
                         Toast.LENGTH_LONG).show();
             }
         }
-
-        // Replace a previous marker to a parking marker
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(location);
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
-
-        // call the method to get SFPark information
-        getSFParkInfo(location.latitude,location.longitude);
-
-        // add information from SFParking into InfoWindow
-        if (sfpInfo.size() > 0) {
-            markerOptions.title(getAddress(location.latitude, location.longitude));
-            markerOptions.snippet("Rate\n"+sfpInfo.get(0).getRATES().toString());
-        } else {
-            markerOptions.title(getAddress(location.latitude, location.longitude));
-            markerOptions.snippet("Rate: Undetected");
-        }
-        // delete previous markers on the map
-        map.clear();
-
-        //present information on Info Window
-        displayInfoWindow(markerOptions);
     }
 
     /**
@@ -278,7 +282,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             // add information into InfoWindow
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(loc.latitude, loc.longitude))
-                    .title(getAddress(loc.latitude,loc.longitude))
+                    .title(getAddress(loc.latitude, loc.longitude))
                     .icon(bitmapMarker));
         }
     }
