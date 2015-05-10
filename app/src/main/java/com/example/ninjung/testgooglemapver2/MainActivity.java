@@ -51,14 +51,23 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         setContentView(R.layout.activity_main);
 
         //used to clean database table if needed
-        //DBHelper dbHandler = new DBHelper(this, null, null, 1);
+        DBHelper dbHandler = new DBHelper(this, null, null, 1);
         //dbHandler.cleanDB();
 
         // get a handle on GoogleMap Fragment
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap(); //instantiate Google Map object
-        location = new LatLng(37.7223950, -122.4786140);// set default location at SFSU
+        if((dbHandler.getRowCountParked()) > 0){
+            buttonCounter++;
+            location = dbHandler.findLocationParked();
+            Toast.makeText(getApplicationContext(),
+                    "Saved car location detected.\n" +
+                    "Retrieving parked coordinates...",
+                    Toast.LENGTH_LONG).show();
+        }
+        else
+            location = new LatLng(37.7223950, -122.4786140);// set default location at SFSU
 
         // get a handle on streetViewPanorama fragment
         StreetViewPanoramaFragment streetViewPanoramaFragment =
@@ -72,6 +81,9 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         MarkerOptions markerOptions = new MarkerOptions() // add content on the marker
                 .title(getAddress(location.latitude,location.longitude))
                 .position(location);
+
+        if((dbHandler.getRowCountParked()) > 0)
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
 
         // add the marker on the map
         Marker marker = map.addMarker(markerOptions);
@@ -211,6 +223,10 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             //storing location to DB
             DBHelper dbHandler = new DBHelper(this, null, null, 1);
             dbHandler.addLocation(location);
+            dbHandler.deleteLocationParked();
+            dbHandler.addLocationParked(location);
+            if((dbHandler.getRowCount()) > 5)
+                dbHandler.deleteLocation();
             Toast.makeText(getApplicationContext(),
                     "Parking location saved.",
                     Toast.LENGTH_LONG).show();
@@ -228,13 +244,13 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             displayInfoWindow(markerOptions);
         } else {
             DBHelper dbHandler = new DBHelper(this, null, null, 1);
-
+            dbHandler.deleteLocationParked();
             LatLng parked = dbHandler.findLocation(dbHandler.getNaxID());
             location = parked;
 
             if (parked != null) {
                 Toast.makeText(getApplicationContext(),
-                        "Retrieved",
+                        "Retrieving... unparked.",
                         Toast.LENGTH_LONG).show();
                 onMapClick(location);
                 markerOptions.position(location);
