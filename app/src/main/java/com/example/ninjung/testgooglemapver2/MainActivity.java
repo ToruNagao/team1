@@ -58,6 +58,8 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap(); //instantiate Google Map object
+
+        //check to see if user has unparked car, if so use that location when app opens
         if((dbHandler.getRowCountParked()) > 0){
             buttonCounter++;
             location = dbHandler.findLocationParked();
@@ -82,6 +84,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                 .title(getAddress(location.latitude,location.longitude))
                 .position(location);
 
+        //if user did not unpark car, change icon to parked icon from default
         if((dbHandler.getRowCountParked()) > 0)
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
 
@@ -214,8 +217,9 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.darkgreen_parking));
         buttonCounter++;
-        if ((buttonCounter % 2) == 1) {
 
+        //if button is pushed for the first time in a cycle
+        if ((buttonCounter % 2) == 1) {
 
             // Setting the position for the marker
             markerOptions.position(location);
@@ -223,13 +227,19 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             //storing location to DB
             DBHelper dbHandler = new DBHelper(this, null, null, 1);
             dbHandler.addLocation(location);
+
+            //clear the saved state table, then add to it
             dbHandler.deleteLocationParked();
             dbHandler.addLocationParked(location);
+
+            //maintenance. if the size of the table is above 5 clean the least recently used row
             if((dbHandler.getRowCount()) > 5)
                 dbHandler.deleteLocation();
+
             Toast.makeText(getApplicationContext(),
                     "Parking location saved.",
                     Toast.LENGTH_LONG).show();
+
             getSFParkInfo(location.latitude, location.longitude);// call the method to get SFPark information
 
             if (sfpInfo.size() > 0) {
@@ -243,8 +253,14 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             map.clear();
             displayInfoWindow(markerOptions);
         } else {
+
+            //if parked button hit a second time in cycle
             DBHelper dbHandler = new DBHelper(this, null, null, 1);
+
+            //unpark location from saved state
             dbHandler.deleteLocationParked();
+
+            //retrieve location from history table
             LatLng parked = dbHandler.findLocation(dbHandler.getNaxID());
             location = parked;
 
@@ -252,6 +268,8 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                 Toast.makeText(getApplicationContext(),
                         "Retrieving... unparked.",
                         Toast.LENGTH_LONG).show();
+
+                //move camera to retrieved location
                 onMapClick(location);
                 markerOptions.position(location);
                 map.clear();
