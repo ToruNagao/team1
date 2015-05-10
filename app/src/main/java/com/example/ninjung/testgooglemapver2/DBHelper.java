@@ -44,7 +44,6 @@ public class DBHelper extends SQLiteOpenHelper{
 
         db.execSQL(CREATE_TABLE_LOCATIONS);
         db.execSQL(CREATE_TABLE_PARKED);
-        getWritableDatabase();
     }
 
     @Override
