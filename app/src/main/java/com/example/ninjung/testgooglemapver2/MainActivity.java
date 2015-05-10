@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
 import android.location.Geocoder;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap(); //instantiate Google Map object
 
-        location = new LatLng(37.7223950, -122.4786140);// set default location at SFSU
+
 
         //check to see if user has unparked car, if so use that location when app opens
         if((dbHandler.getRowCountParked()) > 0){
@@ -70,6 +71,13 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                     "Saved car location detected.\n" +
                     "Retrieving parked coordinates...",
                     Toast.LENGTH_LONG).show();
+            Button p1_button = (Button)findViewById(R.id.setparking);
+            p1_button.setText("Unpark");
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));// set zoom on the map
+        }
+        else {
+            location = new LatLng(37.7223950, -122.4786140);// set default location at SFSU
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13)); // set zoom on the map
         }
 
         // get a handle on streetViewPanorama fragment
@@ -80,7 +88,6 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
 
 
         map.setMyLocationEnabled(true); // enable current location
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13)); // set zoom on the map
         MarkerOptions markerOptions = new MarkerOptions() // add content on the marker
                 .title(getAddress(location.latitude,location.longitude))
                 .position(location);
@@ -253,6 +260,9 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
 
             map.clear();
             displayInfoWindow(markerOptions);
+
+            Button p1_button = (Button)findViewById(R.id.setparking);
+            p1_button.setText("Unpark");
         } else {
 
             //if parked button hit a second time in cycle
@@ -280,6 +290,8 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                         "No records found.",
                         Toast.LENGTH_LONG).show();
             }
+            Button p1_button = (Button)findViewById(R.id.setparking);
+            p1_button.setText("Park");
         }
     }
 
