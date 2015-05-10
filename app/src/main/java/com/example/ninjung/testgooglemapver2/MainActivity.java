@@ -38,6 +38,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         , OnStreetViewPanoramaReadyCallback {
 
     final int RQS_GooglePlayServices = 1;
+    final int DATABASE_VERSION = 2;
     private GoogleMap map;
     LatLng location;
     int buttonCounter = 0;
@@ -51,13 +52,15 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         setContentView(R.layout.activity_main);
 
         //used to clean database table if needed
-        DBHelper dbHandler = new DBHelper(this, null, null, 1);
+        DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
         //dbHandler.cleanDB();
 
         // get a handle on GoogleMap Fragment
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         map = mapFragment.getMap(); //instantiate Google Map object
+
+        location = new LatLng(37.7223950, -122.4786140);// set default location at SFSU
 
         //check to see if user has unparked car, if so use that location when app opens
         if((dbHandler.getRowCountParked()) > 0){
@@ -68,8 +71,6 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                     "Retrieving parked coordinates...",
                     Toast.LENGTH_LONG).show();
         }
-        else
-            location = new LatLng(37.7223950, -122.4786140);// set default location at SFSU
 
         // get a handle on streetViewPanorama fragment
         StreetViewPanoramaFragment streetViewPanoramaFragment =
@@ -225,7 +226,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             markerOptions.position(location);
 
             //storing location to DB
-            DBHelper dbHandler = new DBHelper(this, null, null, 1);
+            DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
             dbHandler.addLocation(location);
 
             //clear the saved state table, then add to it
@@ -255,7 +256,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         } else {
 
             //if parked button hit a second time in cycle
-            DBHelper dbHandler = new DBHelper(this, null, null, 1);
+            DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
 
             //unpark location from saved state
             dbHandler.deleteLocationParked();
@@ -288,7 +289,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
      */
     public void showRecentParking(View view) {
         //retrieve last 5 previous parking information from the DataBase
-        DBHelper dbHandler = new DBHelper(this, null, null, 1);
+        DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
         ArrayList<LatLng> locations = dbHandler.getRecentParking();
 
         // zoom out the map to present the previous parking appropriately
@@ -386,7 +387,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         });
     }
     public void direction(View view){
-        DBHelper dbHandler = new DBHelper(this, null, null, 1);
+        DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
         LatLng location = dbHandler.getLastestParking();
         //String uri = "http://maps.google.com/maps?saddr="+"37.757246, -122.492774"+"&daddr="+location.latitude+","+location.longitude+"&dirflg=w";
         //Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
