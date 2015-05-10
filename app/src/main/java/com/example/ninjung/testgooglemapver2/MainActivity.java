@@ -113,11 +113,12 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     public String getAddress(double lat, double lng) {
         String address = "";
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try
-        {
+        try {
             List<Address> addressList = geocoder.getFromLocation(lat, lng, 1);
-            Address obj = addressList.get(0);
-            address = obj.getAddressLine(0) + ", " +obj.getAddressLine(1);
+             if( (addressList.size() > 0) && (addressList != null) ) {
+                Address obj = addressList.get(0);
+                address = obj.getAddressLine(0) + ", " + obj.getAddressLine(1);
+            }
         }
         catch(IOException e)
         {
@@ -304,34 +305,43 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
         ArrayList<LatLng> locations = dbHandler.getRecentParking();
 
-        // zoom out the map to present the previous parking appropriately
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
+        if( (locations != null) && (locations.size() > 0)) {
 
-        // display last 5 parking in different color
-        for (int i=0;i<locations.size();i++) {
-            LatLng loc = locations.get(i);
-            BitmapDescriptor bitmapMarker;
-            if(i+1==1){
-                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
-            }else if(i+1==2){
-                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
-            }else if(i+1==3){
-                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
-            }else if(i+1==4){
-                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
-            }else {
-                bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+            // zoom out the map to present the previous parking appropriately
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
+
+            // display last 5 parking in different color
+            for (int i = 0; i < locations.size(); i++) {
+                LatLng loc = locations.get(i);
+                BitmapDescriptor bitmapMarker;
+                if (i + 1 == 1) {
+                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN);
+                } else if (i + 1 == 2) {
+                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+                } else if (i + 1 == 3) {
+                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+                } else if (i + 1 == 4) {
+                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
+                } else {
+                    bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
+                }
+
+                // get information from SFPark
+                getSFParkInfo(loc.latitude, loc.longitude);
+
+                // add information into InfoWindow
+                map.addMarker(new MarkerOptions()
+                        .position(new LatLng(loc.latitude, loc.longitude))
+                        .title(getAddress(loc.latitude, loc.longitude))
+                        .icon(bitmapMarker));
             }
-
-            // get information from SFPark
-            getSFParkInfo(loc.latitude,loc.longitude);
-
-            // add information into InfoWindow
-            map.addMarker(new MarkerOptions()
-                    .position(new LatLng(loc.latitude, loc.longitude))
-                    .title(getAddress(loc.latitude, loc.longitude))
-                    .icon(bitmapMarker));
         }
+        else {
+            Toast.makeText(getApplicationContext(),
+                    "No records found.",
+                    Toast.LENGTH_LONG).show();
+        }
+
     }
 
 
