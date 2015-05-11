@@ -118,8 +118,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                 address = obj.getAddressLine(0) + ", " + obj.getAddressLine(1);
             }
         }
-        catch(IOException e)
-        {
+        catch(IOException e) {
             e.printStackTrace();
         }
         return address;
