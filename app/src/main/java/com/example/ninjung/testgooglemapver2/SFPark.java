@@ -111,8 +111,8 @@ public class SFPark {
             jsonResult = result;
 
             GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.registerTypeAdapter(RateInfo[].class, new RSDeserializer());
             gsonBuilder.registerTypeAdapter(new TypeToken<ArrayList<AVL>>(){}.getType(), new AVLDeserializer());
+            gsonBuilder.registerTypeAdapter(RateInfo[].class, new RSDeserializer());
             Gson gson = gsonBuilder.create();
 
             System.out.println(jsonResult);
@@ -353,26 +353,30 @@ class RateInfo {
 }
 
 /**
- * Used for custom deserialization of "RS" attribute. "RS" attribute in JSON data can either contain
- * one object or an array of objects. This class detects that and properly deserializes the data.
- */
+* Used for custom deserialization of "RS" attribute. "RS" attribute in JSON data can either contain
+* one object or an array of objects. This class detects that and properly deserializes the data.
+*/
 class RSDeserializer implements JsonDeserializer<RateInfo[]> {
 
     /**
      *
      * @param json: Instance of JSON element.
      * @param typeOfT: Type of JSON element.
-     * @param context: Context of JSON object.
+     * @param context: Context of JsonDeserializtion.
      * @return An array of RateInfo objects containing the deserialized information from the JSON data.
      * @throws JsonParseException
      */
-
     @Override
     public RateInfo[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException
     {
         if (json instanceof JsonArray) {
-            return new Gson().fromJson(json, RateInfo[].class);
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(new TypeToken<ArrayList<AVL>>(){}.getType(), new AVLDeserializer());
+            Gson gson = gsonBuilder.create();
+
+            return gson.fromJson(json, RateInfo[].class);
         }
         RateInfo rI = context.deserialize(json, RateInfo.class);
 
@@ -380,13 +384,30 @@ class RSDeserializer implements JsonDeserializer<RateInfo[]> {
     }
 }
 
+/**
+ * Used for custom deserialization of "AVL" attribute. "AVL" attribute in JSON data can either contain
+ * one object or an array of objects. This class detects that and properly deserializes the data.
+ */
 class AVLDeserializer implements JsonDeserializer<ArrayList<AVL>> {
 
+    /**
+     *
+     * @param json: Instance of JSON element.
+     * @param typeOfT: Type of JSON element.
+     * @param context: Context of JsonDeserializtion.
+     * @return An ArrayList of AVL objects.
+     * @throws JsonParseException
+     */
     public ArrayList<AVL> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException
     {
         if (json instanceof JsonArray) {
-            return new Gson().fromJson(json, new TypeToken<ArrayList<AVL>>(){}.getType());
+
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.registerTypeAdapter(RateInfo[].class, new RSDeserializer());
+            Gson gson = gsonBuilder.create();
+
+            return gson.fromJson(json, new TypeToken<ArrayList<AVL>>(){}.getType());
         }
         AVL aVL = context.deserialize(json, AVL.class);
 
