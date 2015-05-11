@@ -5,8 +5,6 @@ import android.os.Handler;
 import android.os.Bundle;
 import android.view.Window;
 import android.content.Intent;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.ImageView;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -21,9 +19,10 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.splash);
         int delay = 1000;
         Handler hdl = new Handler();
+        ConnectionDetector connect = ConnectionDetector.getInstance(getApplicationContext());
 
         // exits immediately if there is no internet connection
-        if (!(new ConnectionDetector(getApplicationContext())).isConnectingToInternet()) {
+        if (!(connect.isConnectingToInternet())) {
             System.exit(1);
         }
 
@@ -33,7 +32,6 @@ public class SplashActivity extends Activity {
 
         //x ms delay before runs splashHandler
         hdl.postDelayed(new splashHandler(), delay);
-
     }
 
     class splashHandler implements Runnable {

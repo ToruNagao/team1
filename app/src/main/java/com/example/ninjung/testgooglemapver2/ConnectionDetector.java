@@ -5,10 +5,25 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 public class ConnectionDetector {
+    private static ConnectionDetector instance;
     private Context _context;
-    public ConnectionDetector(Context context){
+
+    private ConnectionDetector(Context context) {
         this._context = context;
     }
+
+    /**
+     * @param _context: context of application
+     * @return instance of ConnectionDetector
+     */
+    public static ConnectionDetector getInstance(Context _context) {
+        instance = new ConnectionDetector(_context);
+        return instance;
+    }
+
+    /**
+     * @return boolean indicating if the device is connected to the Internet
+     */
     public boolean isConnectingToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
