@@ -1,6 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/ac_getinfo"
+        android:title="Info"
+        app:showAsAction="collapseActionView"
+        />
+    <item android:id="@+id/ac_setparking"
+        android:title="Park"
+        app:showAsAction="ifRoom"
+        />
+    <item android:id="@+id/ac_showRecentParking"
+        android:title="Recent"
+        app:showAsAction="ifRoom"
+        />
+    <item android:id="@+id/ac_getDirection"
+        android:title="Direction"
+        app:showAsAction="ifRoom"
+        />
 </menu>

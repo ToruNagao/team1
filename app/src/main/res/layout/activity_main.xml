@@ -8,46 +8,30 @@
     tools:context=".MainActivity"
     android:background="@color/background_floating_material_dark">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/getinfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Info"
-            android:padding="10dp"
-            android:onClick="getInfo"/>
-        <Button
-            android:id="@+id/setparking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Park"
-            android:padding="10dp"
-            android:onClick="setParking"/>
-        <Button
-            android:id="@+id/showRecentParking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Recent"
-            android:padding="10dp"
-            android:onClick="showRecentParking"/>
-        <Button
-            android:id="@+id/getDirection"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Route"
-            android:padding="10dp"
-            android:onClick="getRoute"/>
-    </LinearLayout>
+
+
+
     <!-- Street View Fragment-->
     <fragment
         android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
         android:id="@+id/streetviewpanorama"
         android:layout_width="match_parent"
-        android:layout_height="100dp"/>
+        android:layout_height="100dp">
+
+        <Button
+            android:id="@+id/setparking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:text="Park"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"
+            android:paddingRight="10dp"
+            android:onClick="setParking"
+            android:textColor="@color/white"
+            /> </fragment>
+
     <!-- Google Map Fragment-->
     <fragment
         android:id="@+id/map"
@@ -57,5 +41,5 @@
         tools:ignore="MissingPrefix"
         map:cameraZoom="13"
         map:mapType="normal"
-    />
+        />
 </LinearLayout>

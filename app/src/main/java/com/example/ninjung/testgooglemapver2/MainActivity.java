@@ -41,7 +41,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     private GoogleMap map;
     LatLng location;
     int buttonCounter = 0;
-
+    private String action_park = "Park";
     //ArrayList used to store SFPark information, this is set in processFinish().
     private ArrayList<AVL> sfpInfo = new ArrayList<AVL>();
 
@@ -125,24 +125,53 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     }
 
 
+    //OnCreateOptionMenu and OnOptionsItemSelected handles action bar
+    /**
+     * OnCreateOptionMenu: Initialize action bar
+     * @param menu
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        //MenuInflater inflater = getMenuInflater();
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem item = menu.findItem(R.id.ac_setparking);
+        item.setTitle(action_park);
         return true;
     }
 
+    /**
+     * OnOptionsItemSelected: Responds to click on action bar buttons
+     * @param menuItem
+     * @return
+     */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        View v = new View(this);
+        switch(menuItem.getItemId()) {
+            case R.id.ac_getinfo:
+                getInfo(v);
+                return true;
+            case R.id.ac_setparking:
+                setParking(v);
 
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+                if ((buttonCounter % 2) == 1) {
+                    action_park = "Unpark";
+                } else {
+                    action_park = "Park";
+                }
+                supportInvalidateOptionsMenu();
+                return true;
+            case R.id.ac_showRecentParking:
+                showRecentParking(v);
+                return true;
+            case R.id.ac_getDirection:
+                getRoute(v);
+                return true;
+            default:
+                return super.onOptionsItemSelected(menuItem);
         }
-
-        return super.onOptionsItemSelected(item);
     }
     @Override
     protected void onResume() {

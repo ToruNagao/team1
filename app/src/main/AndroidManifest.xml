@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
         <activity
             android:name=".SplashActivity"
             android:label="@string/app_name" >
@@ -32,7 +32,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCcjH9DIKu3bnm-Lc9NLCT4Muk9wAZR59U"/>
+            android:value="@string/api_key"/>
     </application>
 
 </manifest>
