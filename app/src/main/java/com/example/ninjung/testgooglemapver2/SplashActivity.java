@@ -11,8 +11,7 @@ import android.widget.ImageView;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-public class
-        SplashActivity extends Activity {
+public class SplashActivity extends Activity {
     //ProgressBar progressBar;
     //int progress = 100;
     //Handler handler = new Handler();
@@ -39,13 +38,14 @@ public class
 
         //x ms delay before runs splashHandler
         hdl.postDelayed(new splashHandler(), delay);
+
     }
 
     class splashHandler implements Runnable {
         public void run() {
-                Intent intent = new Intent(getApplication(), MainActivity.class);
-                startActivity(intent);
-                SplashActivity.this.finish();
+//                Intent intent = new Intent(getApplication(), MainActivity.class);
+//                startActivity(intent);
+//                SplashActivity.this.finish();
         }
 
     }
