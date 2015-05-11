@@ -40,13 +40,15 @@
             android:layout_height="wrap_content"
             android:text="Route"
             android:padding="10dp"
-            android:onClick="direction"/>
+            android:onClick="getRoute"/>
     </LinearLayout>
+    <!-- Street View Fragment-->
     <fragment
         android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
         android:id="@+id/streetviewpanorama"
         android:layout_width="match_parent"
         android:layout_height="100dp"/>
+    <!-- Google Map Fragment-->
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
