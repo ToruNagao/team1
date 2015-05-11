@@ -24,11 +24,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
-
-/**
- * Created by Steven on 4/19/2015.
- */
-
 /**
  * Implements the SFPark API, allows users to retrieve parking information from the API.
  */

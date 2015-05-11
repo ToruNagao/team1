@@ -1,6 +1,5 @@
 package com.example.ninjung.testgooglemapver2;
 
-
 import android.content.Intent;
 import android.location.Address;
 import android.net.Uri;
@@ -33,7 +32,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.google.android.gms.maps.GoogleMap.*;
-
 
 public class MainActivity extends FragmentActivity implements OnMapClickListener
         , OnStreetViewPanoramaReadyCallback {
@@ -154,11 +152,11 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
 
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 
-        if (resultCode == ConnectionResult.SUCCESS){
+        if (resultCode == ConnectionResult.SUCCESS) {
             Toast.makeText(getApplicationContext(),
                     "isGooglePlayServicesAvailable SUCCESS",
                     Toast.LENGTH_LONG).show();
-        }else{
+        } else {
             GooglePlayServicesUtil.getErrorDialog(resultCode, this, RQS_GooglePlayServices);
         }
 
@@ -242,7 +240,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             dbHandler.addLocationParked(location);
 
             //maintenance. if the size of the table is above 5 clean the least recently used row
-            if((dbHandler.getRowCount()) > 5)
+            if ((dbHandler.getRowCount()) > 5)
                 dbHandler.deleteLocation();
 
             Toast.makeText(getApplicationContext(),
@@ -305,7 +303,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
         ArrayList<LatLng> locations = dbHandler.getRecentParking();
 
-        if( (locations != null) && (locations.size() > 0)) {
+        if ((locations != null) && (locations.size() > 0)) {
 
             // zoom out the map to present the previous parking appropriately
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));

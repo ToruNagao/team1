@@ -12,11 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 public class SplashActivity extends Activity {
-    //ProgressBar progressBar;
-    //int progress = 100;
-    //Handler handler = new Handler();
-    //TextView textView;
-
     ImageView imageView;
 
     @Override
@@ -28,7 +23,7 @@ public class SplashActivity extends Activity {
         Handler hdl = new Handler();
 
         // exits immediately if there is no internet connection
-        if ( !(new ConnectionDetector(getApplicationContext())).isConnectingToInternet() ) {
+        if (!(new ConnectionDetector(getApplicationContext())).isConnectingToInternet()) {
             System.exit(1);
         }
 
@@ -43,9 +38,9 @@ public class SplashActivity extends Activity {
 
     class splashHandler implements Runnable {
         public void run() {
-//                Intent intent = new Intent(getApplication(), MainActivity.class);
-//                startActivity(intent);
-//                SplashActivity.this.finish();
+            Intent intent = new Intent(getApplication(), MainActivity.class);
+            startActivity(intent);
+            SplashActivity.this.finish();
         }
 
     }
