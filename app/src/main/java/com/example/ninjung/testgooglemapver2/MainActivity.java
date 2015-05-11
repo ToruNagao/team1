@@ -326,9 +326,6 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                     bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
                 }
 
-                // get information from SFPark
-                getSFParkInfo(loc.latitude, loc.longitude);
-
                 // add information into InfoWindow
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(loc.latitude, loc.longitude))
@@ -408,7 +405,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             }
         });
     }
-    public void direction(View view){
+    public void getRoute(View view){
         DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
         LatLng location = dbHandler.getLastestParking();
         //String uri = "http://maps.google.com/maps?saddr="+"37.757246, -122.492774"+"&daddr="+location.latitude+","+location.longitude+"&dirflg=w";
