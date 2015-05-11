@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class DBHelper extends SQLiteOpenHelper{
+public class DBHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "locations.db";
@@ -30,7 +30,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
 
     @Override
-    public void onCreate(SQLiteDatabase db){
+    public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE_LOCATIONS = "CREATE TABLE " + TABLE_LOCATIONS
                 + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
                 + COLUMN_LATITUDE + " DOUBLE ,"
@@ -47,7 +47,7 @@ public class DBHelper extends SQLiteOpenHelper{
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARKED);
@@ -55,14 +55,14 @@ public class DBHelper extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    public void cleanDB(){
+    public void cleanDB() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATIONS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARKED);
         onCreate(db);
     }
 
-    public void addLocation(LatLng location){
+    public void addLocation(LatLng location) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_LATITUDE, location.latitude);
         values.put(COLUMN_LONGITUDE, location.longitude);
@@ -74,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper{
         db.close();
     }
 
-    public void addLocationParked(LatLng location){
+    public void addLocationParked(LatLng location) {
         ContentValues values2 = new ContentValues();
         values2.put(COLUMN_LATITUDE, location.latitude);
         values2.put(COLUMN_LONGITUDE, location.longitude);
@@ -84,8 +84,7 @@ public class DBHelper extends SQLiteOpenHelper{
         db.close();
     }
 
-
-    public boolean deleteLocation(){
+    public boolean deleteLocation() {
         boolean result = false;
 
         String query = "Select " + COLUMN_ID + " FROM " + TABLE_LOCATIONS + " ORDER BY "
@@ -95,7 +94,7 @@ public class DBHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(query, null);
         int id;
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             id = Integer.parseInt(cursor.getString(0));
             db.delete(TABLE_LOCATIONS, COLUMN_ID + " = " + id, null);
             cursor.close();
@@ -105,8 +104,7 @@ public class DBHelper extends SQLiteOpenHelper{
         return result;
     }
 
-    public void deleteLocationParked(){
-
+    public void deleteLocationParked() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLE_PARKED);
 
@@ -115,20 +113,16 @@ public class DBHelper extends SQLiteOpenHelper{
 
 
 
-    public LatLng findLocation(int id){
+    public LatLng findLocation(int id) {
         String query = "Select * from " + TABLE_LOCATIONS + " WHERE " +
                 COLUMN_ID + " = \"" + id + "\"";
 
         SQLiteDatabase db = this.getWritableDatabase();
-
-
         Cursor cursor = db.rawQuery(query, null);
-
         double latitude, longitude;
-
         LatLng location;
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
 
             latitude = Double.parseDouble(cursor.getString(1));
@@ -145,7 +139,7 @@ public class DBHelper extends SQLiteOpenHelper{
         return location;
     }
 
-    public LatLng findLocationParked(){
+    public LatLng findLocationParked() {
         String query = "Select * from " + TABLE_PARKED;
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -157,7 +151,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
         LatLng location;
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
 
             latitude = Double.parseDouble(cursor.getString(1));
@@ -175,7 +169,7 @@ public class DBHelper extends SQLiteOpenHelper{
     }
 
 
-    public int getRowCountParked(){
+    public int getRowCountParked() {
         String query = "Select * FROM " + TABLE_PARKED;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -183,18 +177,18 @@ public class DBHelper extends SQLiteOpenHelper{
     }
 
 
-    public int getRowCount(){
+    public int getRowCount() {
         String query = "Select * FROM " + TABLE_LOCATIONS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         return cursor.getCount();
     }
 
-    public int getNaxID(){
+    public int getNaxID() {
         String query = "Select MAX(" + COLUMN_ID + ") FROM " + TABLE_LOCATIONS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             cursor.moveToFirst();
             return cursor.getInt(0);
         }
@@ -202,7 +196,7 @@ public class DBHelper extends SQLiteOpenHelper{
             return -1;
     }
 
-    public ArrayList<LatLng> getRecentParking(){
+    public ArrayList<LatLng> getRecentParking() {
         String query = "Select DISTINCT "+COLUMN_LATITUDE+", "+ COLUMN_LONGITUDE+
                 " from " + TABLE_LOCATIONS +
                 " Group by " +COLUMN_ID+
@@ -214,8 +208,8 @@ public class DBHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(query, null);
 
         ArrayList<LatLng> locations = new ArrayList<LatLng>();
-        if(cursor.moveToFirst()){
-            while(cursor.isAfterLast() == false) {
+        if (cursor.moveToFirst()) {
+            while (cursor.isAfterLast() == false) {
                 LatLng location;
                 double latitude, longitude;
                 latitude = Double.parseDouble(cursor.getString(0));
@@ -232,7 +226,7 @@ public class DBHelper extends SQLiteOpenHelper{
         return locations;
     }
 
-    public LatLng getLastestParking(){
+    public LatLng getLastestParking() {
         String query = "select "+COLUMN_LATITUDE+", "+ COLUMN_LONGITUDE+
                 " from " + TABLE_LOCATIONS +
                 " where " +COLUMN_ID+
@@ -244,7 +238,7 @@ public class DBHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(query, null);
 
         LatLng location = null;
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
                 double latitude, longitude;
                 latitude = Double.parseDouble(cursor.getString(0));
                 longitude = Double.parseDouble(cursor.getString(1));
