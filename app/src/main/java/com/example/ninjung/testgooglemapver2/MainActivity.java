@@ -92,7 +92,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
 
         //if user did not unpark car, change icon to parked icon from default
         if((dbHandler.getRowCountParked()) > 0){
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_icon));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_icon_red));
         }
         // add the marker on the map
         Marker marker = map.addMarker(markerOptions);
@@ -250,7 +250,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     public void setParking(View view) {
 
         MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_icon));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.parking_icon_red));
         buttonCounter++;
 
         //if button is pushed for the first time in a cycle
