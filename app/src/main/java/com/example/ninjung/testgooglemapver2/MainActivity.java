@@ -419,7 +419,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                 View v = getLayoutInflater().inflate(R.layout.windowlayout, null);
                 LatLng point = marker.getPosition();
 
-                //Text and image to be displayed in this custom window
+                //Text to be displayed in this custom window
                 TextView tvaddress = (TextView) v.findViewById(R.id.tv_address);
                 tvaddress.setText(getAddress(point.latitude, point.longitude));
                 TextView tvrate = (TextView) v.findViewById(R.id.tv_rate);
@@ -428,15 +428,22 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             }
         });
     }
+
+    /**
+     *  Launch Google Map to perform navigation from current location to the latest parking
+     */
     public void getRoute(View view){
+        //retrieve latest parking from database
         DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
         LatLng location = dbHandler.getLastestParking();
-        //String uri = "http://maps.google.com/maps?saddr="+"37.757246, -122.492774"+"&daddr="+location.latitude+","+location.longitude+"&dirflg=w";
-        //Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
+
+        //Request a navigation by sending latitude and longitude via URI
         Uri gmmIntentUri = Uri.parse("google.navigation:q="+location.latitude+","+ location.longitude+"&mode=w");
+
+        //Create Intents to request google map action
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
-        startActivity(mapIntent);
+        startActivity(mapIntent); // start google map application
     }
 
 }
