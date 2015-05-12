@@ -223,6 +223,7 @@ public class DBHelper extends SQLiteOpenHelper {
             locations = null;
 
         db.close();
+        System.out.println("location size: "+locations.size());
         return locations;
     }
 

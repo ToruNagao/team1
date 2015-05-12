@@ -349,7 +349,6 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                 } else {
                     bitmapMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA);
                 }
-
                 // add information into InfoWindow
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(loc.latitude, loc.longitude))
