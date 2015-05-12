@@ -365,7 +365,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     }
 
 
-    private void getSFParkInfo(double latitude, double longtitude){
+    private void getSFParkInfo(double latitude, double longitude){
 
         SFPark.FeedTask feedTask = new SFPark.FeedTask(new AsyncResponse() {
 
@@ -389,7 +389,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             }
         });
         //Request information from the SFPark API.
-        feedTask.execute(latitude, longtitude);
+        feedTask.execute(latitude, longitude);
     }
 
     /**
