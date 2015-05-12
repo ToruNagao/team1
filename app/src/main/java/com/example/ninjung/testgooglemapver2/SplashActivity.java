@@ -15,13 +15,14 @@ import android.view.animation.AnimationUtils;
 
 public class SplashActivity extends Activity {
     ImageView imageView;
+    ImageView backgroundView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.splash);
-        int delay = 12000;
+        //int delay = 12000;
         Handler hdl = new Handler();
 
         ConnectionDetector connect = ConnectionDetector.getInstance(getApplicationContext());
@@ -30,13 +31,13 @@ public class SplashActivity extends Activity {
         if (!(connect.isConnectingToInternet())) {
             System.exit(1);
         }
-
+        backgroundView = (ImageView) findViewById(R.id.backgroundImage);
         imageView = (ImageView) findViewById(R.id.tireImage);
         final Animation animRotate = AnimationUtils.loadAnimation(this,R.anim.rotate);
         imageView.startAnimation(animRotate);
 
         //x ms delay before runs splashHandler
-        hdl.postDelayed(new splashHandler(), delay);
+        //hdl.postDelayed(new splashHandler(), delay);
 
     }
     @Override

@@ -3,13 +3,21 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="bottom|left">
+    android:gravity="bottom|left"
+    android:weightSum="1">
 
     <ImageView
         android:id="@+id/tireImage"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:src="@drawable/tireonly"
-        android:layout_gravity="center_horizontal|bottom" />
+        android:layout_gravity="right" />
+
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="367dp"
+        android:layout_height="160dp"
+        android:src="@drawable/background"
+        android:layout_weight="1.04" />
 
 </LinearLayout>
