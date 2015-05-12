@@ -343,7 +343,7 @@ class RateInfo {
      */
     @Override
     public String toString() {
-        return "Begin:" + BEG + " End:" + END + " Rate:" + RATE + " Rate Qualifier:" + RQ + "\n";
+        return BEG + "-" + END + " Rate:" + RATE + " Rate Qualifier:" + RQ + "\n";
     }
 }
 
