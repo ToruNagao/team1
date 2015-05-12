@@ -17,7 +17,7 @@
         android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"
         android:id="@+id/streetviewpanorama"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="175dp">
 
         <Button
             android:id="@+id/setparking"
