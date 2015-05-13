@@ -52,7 +52,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
 
         //used to clean database table if needed
         DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
-        dbHandler.cleanDB();
+        //dbHandler.cleanDB();
 
         // get a handle on GoogleMap Fragment
         MapFragment mapFragment = (MapFragment) getFragmentManager()
