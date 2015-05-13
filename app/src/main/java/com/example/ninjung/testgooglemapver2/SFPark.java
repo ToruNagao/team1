@@ -353,9 +353,9 @@ class RateInfo {
     @Override
     public String toString() {
         if (BEG != null) {
-            return BEG + "-" + END + " Rate:" + RATE + " Rate Qualifier:" + RQ + "\n";
+            return BEG + "-" + END + " Rate: " + RATE + " Rate Qualifier:" + RQ + "\n";
         } else {
-            return DESC + " Rate:" + RATE + "Rate Qualifier:" + RQ + "\n";
+            return DESC + " Rate: " + RATE + " Rate Qualifier:" + RQ + "\n";
         }
 
     }

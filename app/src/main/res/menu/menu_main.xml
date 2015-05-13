@@ -18,7 +18,7 @@
         app:showAsAction="ifRoom"
         />
     <item android:id="@+id/ac_getDirection"
-        android:title="Direction"
+        android:title="Directions"
         app:showAsAction="ifRoom"
         />
 </menu>

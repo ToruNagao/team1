@@ -8,9 +8,9 @@
 
     <ImageView
         android:id="@+id/backgroundImage"
-        android:layout_width="922dp"
-        android:layout_height="664dp"
-        android:src="@drawable/background"
+        android:layout_width="1379dp"
+        android:layout_height="990dp"
+        android:src="@drawable/sfbackground"
         android:layout_weight="1.04"
         android:layout_gravity="center" />
 
