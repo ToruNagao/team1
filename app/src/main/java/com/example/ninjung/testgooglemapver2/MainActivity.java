@@ -231,9 +231,11 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             markerOptions.title(getAddress(location.latitude, location.longitude));
 
             if (sfpInfo.size() > 0) {
-                markerOptions.snippet("RATE\n" + sfpInfo.get(0).getRATES().toString());
+
+                markerOptions.snippet(sfpInfo.get(0).getRATES().toString());
+
             } else {
-                markerOptions.snippet("RATE: Undetected");
+                markerOptions.snippet("RATE: None Available");
             }
 
             map.clear();//clear marker on the map

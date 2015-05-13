@@ -303,6 +303,7 @@ class RateInfo {
     private String END;
     private String RATE;
     private String RQ;
+    private String DESC;
 
     /**
      * Get the beginning time a parking meter requires money.
@@ -337,13 +338,26 @@ class RateInfo {
     }
 
     /**
+     * Get the descriptive rate information of the location if available.
+     * @return String containing descriptive information of the parking location.
+     */
+    public String getDESC() {
+        return DESC;
+    }
+
+    /**
      * Get the beginning and ending times, the rate and rate qualifier of a parking meter.
      * @return String containing the beginning and ending times, the rate and rate qualifier
      * of a parking meter.
      */
     @Override
     public String toString() {
-        return BEG + "-" + END + " Rate:" + RATE + " Rate Qualifier:" + RQ + "\n";
+        if (BEG != null) {
+            return BEG + "-" + END + " Rate:" + RATE + " Rate Qualifier:" + RQ + "\n";
+        } else {
+            return DESC + " Rate:" + RATE + "Rate Qualifier:" + RQ + "\n";
+        }
+
     }
 }
 
