@@ -223,11 +223,10 @@ public class DBHelper extends SQLiteOpenHelper {
             locations = null;
 
         db.close();
-        System.out.println("location size: "+locations.size());
         return locations;
     }
 
-    public LatLng getLastestParking() {
+    public LatLng getLastParking() {
         String query = "select "+COLUMN_LATITUDE+", "+ COLUMN_LONGITUDE+
                 " from " + TABLE_LOCATIONS +
                 " where " +COLUMN_ID+

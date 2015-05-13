@@ -52,7 +52,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
 
         //used to clean database table if needed
         DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
-        //dbHandler.cleanDB();
+        dbHandler.cleanDB();
 
         // get a handle on GoogleMap Fragment
         MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -63,12 +63,17 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
 
         //check to see if user has unparked car, if so use that location when app opens
         if((dbHandler.getRowCountParked()) > 0){
+            //increment counter to match parked behavior
             buttonCounter++;
+
+            //retrieve location
             location = dbHandler.findLocationParked();
             Toast.makeText(getApplicationContext(),
                     "Saved car location detected.\n" +
                     "Retrieving parked coordinates...",
                     Toast.LENGTH_LONG).show();
+
+            //rename the button
             Button p1_button = (Button)findViewById(R.id.setparking);
             p1_button.setText("Unpark");
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));// set zoom on the map
@@ -437,7 +442,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     public void getRoute(View view){
         //retrieve latest parking from database
         DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
-        LatLng location = dbHandler.getLastestParking();
+        LatLng location = dbHandler.getLastParking();
 
         //Request a navigation by sending latitude and longitude via URI
         Uri gmmIntentUri = Uri.parse("google.navigation:q="+location.latitude+","+ location.longitude+"&mode=w");
