@@ -17,6 +17,12 @@ public class SplashActivity extends Activity {
     ImageView imageView;
     ImageView backgroundView;
 
+    /**
+     * This method initializes SplashActivity class
+     *
+     * @param savedInstanceState
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +46,14 @@ public class SplashActivity extends Activity {
         //hdl.postDelayed(new splashHandler(), delay);
 
     }
-    @Override
 
+    /**
+     * This method handles touch event. When the splash screen is tapped,
+     * it moves to the main activity
+     * @param event
+     * @return true
+     */
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -49,8 +61,6 @@ public class SplashActivity extends Activity {
             Intent intent = new Intent(getApplication(), MainActivity.class);
             startActivity(intent);
             SplashActivity.this.finish();
-
-
         }
 
         return true;

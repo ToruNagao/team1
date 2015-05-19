@@ -45,6 +45,10 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     //ArrayList used to store SFPark information, this is set in processFinish().
     private ArrayList<AVL> sfpInfo = new ArrayList<AVL>();
 
+    /**
+     * This method initializes MainActivity class
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,6 +182,10 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
                 return super.onOptionsItemSelected(menuItem);
         }
     }
+
+    /**
+     * Resumes MainActivity
+     */
     @Override
     protected void onResume() {
         // TODO Auto-generated method stub
@@ -192,6 +200,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         }
 
     }
+
     /**
      * This method displays a marker on a location that users click on the map
      * @param point - contains Latitude and Longitude on the location that users click on the map
@@ -372,6 +381,11 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
     }
 
 
+    /**
+     *
+     * @param latitude
+     * @param longitude
+     */
     private void getSFParkInfo(double latitude, double longitude){
 
         SFPark.FeedTask feedTask = new SFPark.FeedTask(new AsyncResponse() {
@@ -452,5 +466,4 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent); // start google map application
     }
-
 }
