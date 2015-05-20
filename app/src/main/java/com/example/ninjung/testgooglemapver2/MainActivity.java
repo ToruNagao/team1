@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         , OnStreetViewPanoramaReadyCallback {
 
     final int RQS_GooglePlayServices = 1;
-    final int DATABASE_VERSION = 2;
+    //final int DATABASE_VERSION = 2;
     private GoogleMap map;
     LatLng location;
     int buttonCounter = 0;
@@ -55,7 +55,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         setContentView(R.layout.activity_main);
 
         //used to clean database table if needed
-        DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
+        DBHelper dbHandler = DBHelper.getInstance(getApplicationContext());
         //dbHandler.cleanDB();
 
         // get a handle on GoogleMap Fragment
@@ -274,7 +274,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
             markerOptions.position(location);
 
             //storing location to DB
-            DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
+            DBHelper dbHandler = DBHelper.getInstance(getApplicationContext());
             dbHandler.addLocation(location);
 
             //clear the saved state table, then add to it
@@ -307,7 +307,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
         } else {
 
             //if parked button hit a second time in cycle
-            DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
+            DBHelper dbHandler = DBHelper.getInstance(getApplicationContext());
 
             //unpark location from saved state
             dbHandler.deleteLocationParked();
@@ -342,7 +342,7 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
      */
     public void showRecentParking(View view) {
         //retrieve last 5 previous parking information from the DataBase
-        DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
+        DBHelper dbHandler = DBHelper.getInstance(getApplicationContext());
         ArrayList<LatLng> locations = dbHandler.getRecentParking();
 
         if ((locations != null) && (locations.size() > 0)) {
@@ -382,9 +382,9 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
 
 
     /**
-     *
-     * @param latitude
-     * @param longitude
+     * Requests information from the SFPark API using the latitude/longitude parameters
+     * @param latitude a double representing the latitude of a LatLng object
+     * @param longitude a double representing the longitude of a LatLng object
      */
     private void getSFParkInfo(double latitude, double longitude){
 
@@ -454,9 +454,12 @@ public class MainActivity extends FragmentActivity implements OnMapClickListener
      *  Launch Google Map to perform navigation from current location to the latest parking
      */
     public void getRoute(View view){
-        //retrieve latest parking from database
-        DBHelper dbHandler = new DBHelper(this, null, null, DATABASE_VERSION);
-        LatLng location = dbHandler.getLastParking();
+        //retrieve latest parking from database if parked, else use current clicked location
+        DBHelper dbHandler = DBHelper.getInstance(getApplicationContext());
+        if(dbHandler.getRowCountParked() > 0)
+            location = dbHandler.getLastParking();
+
+
 
         //Request a navigation by sending latitude and longitude via URI
         Uri gmmIntentUri = Uri.parse("google.navigation:q="+location.latitude+","+ location.longitude+"&mode=w");
